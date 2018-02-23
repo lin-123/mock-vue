@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>test</title>
+</head>
+<body>
+  <div id="test">
+    <p>{{msg}}</p>
+    <p>{{msg}}</p>
+    <p>{{msg}}</p>
+    <p>{{what}}</p>
+    <p>{{hey}}</p>
+
+  </div>
+
+  <script type="text/javascript">
+  const bindingMark = 'data-binding'
+  function Element(id, initData) {
+    const root = document.getElementById(id)
+    // internal copy
+    const bindings = {}
+    // extarnal interface
+    const data   = self.data = {}
+
+    // decorate
+    root.innerHTML  = root.innerHTML.replace(/\{\{(.*)\}\}/g, (match, variable) => {
+      console.log(match, variable)
+      bindings[variable] = {}
+      return `<span ${bindingMark}=${variable}></span>`
+    })
+
+    for(var variable in bindings) {
+      bind(variable)
+    }
+
+    // bind 需要剥离出来， 为variable单独开辟一个作用域， 避免Object.defineProperty的坑
+    function bind(variable) {
+      bindings[variable].els = document.querySelectorAll(`[${bindingMark}=${variable}]`)
+      ;[].forEach.call(bindings[variable].els, (el, idx) => {
+        el.removeAttribute(bindingMark)
+      })
+      Object.defineProperty(data, variable, {
+        get() {
+          return bindings[variable].value
+        },
+        set(newVal) {
+          ;[].forEach.call(bindings[variable].els, el => el.innerText = newVal)
+          bindings[variable].value = newVal
+        }
+      })
+    }
+    if(initData) {
+      for(var i in initData) {
+        data[i] = initData[i]
+      }
+    }
+  }
+
+  Element('test', {
+    msg: 'hello'
+  })
+  </script>
+
+
+</body>
+</html>
