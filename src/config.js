@@ -1,3 +1,4 @@
 module.exports = {
-  prefix: 'sd'
+  prefix: 'sd',
+  block: 'sd-block'
 }

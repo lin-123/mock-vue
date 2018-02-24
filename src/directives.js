@@ -1,3 +1,4 @@
+const {block} = require('./config')
 module.exports = {
     text: function (value) {
         // debugger
@@ -38,8 +39,26 @@ module.exports = {
     },
 
     each: {
+        bind() {
+            this.el.setAttribute(block, true)
+            this.container = this.el.parentNode
+            this.el.parentNode.removeChild(this.el)
+        },
         update(collection) {
-
+            let str = ''
+            this.el.removeAttribute(block)
+            collection.forEach(element => {
+                const seed = this.buildHtml(element)
+                this.container.append(seed.el)
+            });
+        },
+        buildHtml(element) {
+            const data = Object.keys(element).reduce((pre, cur) => {
+                pre[this.arg + '.' + cur] = element[cur]
+                return pre
+            }, {})
+            const node = this.el.cloneNode(true)
+            return new Seed(node, data)
         }
     }
 

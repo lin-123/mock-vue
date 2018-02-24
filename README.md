@@ -3,7 +3,8 @@
 ## todo
 
 - 数据的遍历： v-for 仔细看
-  - 创建子的seed类来实现
+  * [x] 创建子的seed类来实现
+  * [ ] watch array
 
 ## done
 

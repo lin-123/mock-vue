@@ -5,10 +5,9 @@ const {prefix} = require('./config')
 class Directive {
   constructor(name, value) {
     const noPrefix = name.substr(prefix.length + 1)
-    const [key, ...arg] = noPrefix.split('-')
+    const [key, arg] = noPrefix.split('-')
     const [variable, filter] = value.split('|').map(i => i.trim())
 
-    // if(!Directives[key]) return;
     // for directives on method
     this.arg  = arg
     // for seed

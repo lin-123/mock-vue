@@ -2,8 +2,9 @@ const Seed = require('./seed')
 const Filters = require('./filters')
 
 class Main {
-  constructor(id, scope) {
-    const root = document.getElementById(id)
+  constructor(root, scope) {
+    if(typeof root == 'string') root = document.getElementById(root)
+
     return new Seed(root, scope)
   }
 

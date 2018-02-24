@@ -1,4 +1,5 @@
 const Directive = require('./directive')
+const {block} = require('./config')
 
 class Seed {
   constructor(root, scope) {
@@ -31,16 +32,21 @@ class Seed {
 
   _compileNode(el) {
     if(el.nodeType === 3) return console.log('text node');
-    if(!(el.attributes && el.attributes.length)) return;
-    // attrs should copy out
-    const attrs = [].map.call(el.attributes, ({name, value}) => ({name, value}))
-    attrs.forEach(({name, value}) => {
-      const directive = Directive.parse(name, value)
-      if(!directive) return;
-      el.removeAttribute(name)
-      this._bind(el, directive)
-    })
 
+    if(el.attributes && el.attributes.length){
+      // attrs should copy out
+      const attrs = [].map.call(el.attributes, ({name, value}) => ({name, value}))
+      attrs.forEach(({name, value}) => {
+        const directive = Directive.parse(name, value)
+        if(!directive) return;
+        this._bind(el, directive)
+
+        el.removeAttribute(name)
+      })
+    }
+
+    // debugger
+    if(el.getAttribute(block)) return console.log(el, 'block');
     el.childNodes.forEach(this._compileNode.bind(this))
   }
 
@@ -51,6 +57,7 @@ class Seed {
 
     if(!this._bindings[variable]) this._createBinding(variable);
     this._bindings[variable].directives.push(directive)
+    if(directive.bind) directive.bind.call(directive);
   }
 
   _createBinding(variable) {
