@@ -2,12 +2,12 @@
 
 ## todo
 
-- 遍历dom 来完成数据创建和绑定
-
 - 数据的遍历： v-for 仔细看
   - 创建子的seed类来实现
 
 ## done
+
+- 遍历dom 来完成数据创建和绑定
 - sd-on-click not fix
   * fixed by recusion dom
 

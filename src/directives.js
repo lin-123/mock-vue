@@ -1,31 +1,31 @@
 module.exports = {
-    text: function (el, value) {
-        el.textContent = value || ''
+    text: function (value) {
+        // debugger
+        this.el.textContent = value || ''
     },
-    show: function (el, value) {
-        el.style.display = value ? '' : 'none'
+    show: function (value) {
+        this.el.style.display = value ? '' : 'none'
     },
-    class: function (el, value, classname) {
-        el.classList[value ? 'add' : 'remove'](classname)
+    class: function (value, classname) {
+        this.el.classList[value ? 'add' : 'remove'](classname)
     },
     on: {
-        update: function (el, handler, event, directive) {
-            if (!directive.handlers) {
-                directive.handlers = {}
-            }
-            var handlers = directive.handlers
+        update: function (handler) {
+            const {handlers = {}, arg: event, el, seed} = this
+
             if (handlers[event]) {
                 el.removeEventListener(event, handlers[event])
             }
+
             if (handler) {
-                handler = handler.bind(el)
+                handler = handler.bind(seed)
                 el.addEventListener(event, handler)
                 handlers[event] = handler
             }
         },
-        unbind: function (el, event, directive) {
-            if (directive.handlers) {
-                el.removeEventListener(event, directive.handlers[event])
+        unbind: function () {
+            if (this.handlers) {
+                this.el.removeEventListener(this.arg, this.handlers[this.arg])
             }
         },
         customFilter: function (handler, selectors) {
