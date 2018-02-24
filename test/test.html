@@ -13,9 +13,9 @@
       <p sd-class-red="error" sd-text="hello | subStr"></p>
     </div>
     <script>
-      Seed.filter('subStr', (str) => str.slice(0, 2))
+      Seed.filter('subStr', (str) => str.slice(0, 3))
 
-      var app = Seed.create({
+      var app = new Seed({
         id: 'test',
         // template
         scope: {
