@@ -3,7 +3,7 @@ const Filters = require('./filters')
 
 class Main {
   constructor(opt) {
-    new Seed(opt)
+    return new Seed(opt)
   }
 
   static filter(name, fn) {

@@ -11,38 +11,45 @@ class Seed {
     // external interface
     this.scope = {}
 
-    Object.keys(Directives).forEach(directiveKey => this._bind(directiveKey))
+    this._compileNode(root)
+
+    // Object.keys(Directives).forEach(directiveKey => this._bind(directiveKey))
 
     for(var variable in this._bindings){
       this.scope[variable] = scope[variable]
     }
   }
 
-  _getAttributeKey(key) {
-    return `${prefix}-${key}`
+  _compileNode(el) {
+    if(el.nodeType === 3) {
+      return console.log('text node');
+    }
+    if(!(el.attributes && el.attributes.length)) return;
+
+    ;[].forEach.call(el.attributes, ({name, value}) => {
+      const directive = this._parseDirective(el, name, value)
+      if(!directive) return;
+
+      const {variable} = directive
+      if(!this._bindings[variable]) this._createBinding(variable);
+      this._bindings[variable].directives.push(directive)
+    })
+
+    el.childNodes.forEach(this._compileNode.bind(this))
   }
 
-  _bind(directiveKey) {
-    // 获取带有这个指令的所有节点
-    const attributeKey = `${prefix}-${directiveKey}`
-    const els = document.querySelectorAll(`[${attributeKey}]`)
-
-    // 把directive装到binding上
-    ;[].forEach.call(els, (el, idx) => {
-      const value = el.getAttribute(`${attributeKey}`)
-      el.removeAttribute(attributeKey)
-
-      const [variable, filter] = value.split('|').map(i => i.trim())
-
-      if(!this._bindings[variable]) this._createBinding(variable);
-
-      this._bindings[variable].directives.push({
-        filter: filter && Filters[filter],
-        directive: Directives[directiveKey],
-        key: directiveKey,
-        el
-      })
-    })
+  _parseDirective(el, name, value) {
+    if(name.indexOf(prefix+'-') == -1) return;
+    const noPrefix = name.substr(prefix.length + 1)
+    const [key, ...arg] = noPrefix.split('-')
+    const [variable, filter] = value.split('|').map(i => i.trim())
+    return {
+      filter: filter && Filters[filter],
+      directive: Directives[key],
+      arg,
+      variable,
+      el
+    }
   }
 
   _createBinding(variable) {
@@ -55,12 +62,11 @@ class Seed {
       set: (newVal) => {
         this._bindings[variable].value = newVal
         this._bindings[variable].directives.forEach( (directiveObj)=> {
-          const {directive, key, filter, el} = directiveObj
+          const {directive, arg, filter, el} = directiveObj
           if(typeof directive == 'function')
             return directive(el, filter ? filter(newVal) : newVal)
 
-          const event = key.split('-')[1]
-          directive.update(el, this.scope[variable], event, directiveObj)
+          directive.update(el, this.scope[variable], arg, directiveObj)
         })
       }
     })
