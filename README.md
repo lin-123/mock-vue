@@ -1,5 +1,11 @@
 # mock vue
 
+## Description
+
+- vue learning
+- mock vue
+- track vue commit
+
 ## todo
 
 - 数据的遍历： v-for 仔细看
@@ -20,3 +26,7 @@
 ## vue seed.js build
 
 - webpack --config dist/webpack.config.js --watch
+
+## cmd
+
+- git log --graph --oneline --all
