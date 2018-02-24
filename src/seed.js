@@ -31,11 +31,13 @@ class Seed {
 
   _compileNode(el) {
     if(el.nodeType === 3) return console.log('text node');
-
     if(!(el.attributes && el.attributes.length)) return;
-    ;[].forEach.call(el.attributes, ({name, value}) => {
+    // attrs should copy out
+    const attrs = [].map.call(el.attributes, ({name, value}) => ({name, value}))
+    attrs.forEach(({name, value}) => {
       const directive = Directive.parse(name, value)
       if(!directive) return;
+      el.removeAttribute(name)
       this._bind(el, directive)
     })
 
