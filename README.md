@@ -3,6 +3,7 @@
 ## todo
 
 - 数据的遍历： v-for 仔细看
+- sd-on-click not fix
 
 ## note
 
