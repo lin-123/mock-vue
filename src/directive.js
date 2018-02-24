@@ -8,6 +8,7 @@ class Directive {
     const [key, ...arg] = noPrefix.split('-')
     const [variable, filter] = value.split('|').map(i => i.trim())
 
+    // if(!Directives[key]) return;
     // for directives on method
     this.arg  = arg
     // for seed
