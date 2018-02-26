@@ -1,7 +1,6 @@
-const {block, mutatorMethods} = require('./config')
+const {BLOCK, mutatorMethods} = require('./config')
 module.exports = {
     text: function (value) {
-        // debugger
         this.el.textContent = value || ''
     },
     show: function (value) {
@@ -13,6 +12,7 @@ module.exports = {
     on: {
         update: function (handler) {
             const {handlers = {}, arg: event, el, seed} = this
+            // console.log('update on click: ', event, el, handler);
 
             if (handlers[event]) el.removeEventListener(event, handlers[event]);
 
@@ -40,8 +40,7 @@ module.exports = {
 
     each: {
         bind() {
-            this.el[block] = true
-            // this.el.setAttribute(block, true)
+            this.el[BLOCK] = true
             const ctn = this.container = this.el.parentNode
             this.marker = document.createComment('sd-each-' + this.arg + '-marker')
             ctn.insertBefore(this.marker, this.el)
@@ -52,8 +51,8 @@ module.exports = {
         unbind() {
             // this el and bindings will be remove, so dont need to clear this memery
             // should remove if in attribute
-            // this.el.removeAttribute(block)
-            // delete this.el[block]
+            // this.el.removeAttribute(BLOCK)
+            // delete this.el[BLOCK]
         },
         update(collection) {
             let str = ''

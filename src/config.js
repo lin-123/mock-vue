@@ -1,6 +1,7 @@
 module.exports = {
   prefix: 'sd',
-  block: 'sd-block',
+  BLOCK: 'sd-block',
+  CONTROLLER: 'sd-controller',
   mutatorMethods: [
     'pop',
     'push',

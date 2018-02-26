@@ -1,21 +1,24 @@
 const Directive = require('./directive')
-const {block} = require('./config')
+const Controllers = require('./controllers')
+const {BLOCK, CONTROLLER} = require('./config')
 
 class Seed {
   constructor(root, scope, options) {
     if(typeof root == 'string') root = document.getElementById(root)
     this.el = root
+    this.controllerName = this.el.getAttribute(CONTROLLER)
     // internal copy
     this._bindings = {}
     // external interface
     this.scope = {}
     this._options = options || {}
-
     this._compileNode(root)
 
     for(var variable in this._bindings){
       this.scope[variable] = scope[variable]
     }
+    // 时序问题， 必须要在this.scope = scope 之后再去extension
+    this._extension()
   }
 
   destroy() {
@@ -33,23 +36,39 @@ class Seed {
     this.el.parentNode.removeChild(this.el)
   }
 
+  _extension() {
+    const controller = Controllers[this.controllerName]
+    if(!controller) return;
+
+    for(let ext in controller) {
+      if(this.scope[ext]) console.warn('extension already exist, will be overwritten. extension=', ext);
+      this.scope[ext] = controller[ext]
+    }
+  }
+
   _compileNode(el) {
-    if(el.nodeType === 3) return console.log('text node');
+    if(el.nodeType === 3) return;
+    // return console.log('text node');
 
     if(el.attributes && el.attributes.length){
       // attrs should copy out
       const attrs = [].map.call(el.attributes, ({name, value}) => ({name, value}))
+
+      // if(attrs.find(({name, value}) => name == CONTROLLER && value != this.controllerName ))
+      //   return console.log(name, 'controller', attrs, CONTROLLER);
+
       attrs.forEach(({name, value}) => {
         const directive = Directive.parse(name, value)
         if(!directive) return;
-        this._bind(el, directive)
 
+        this._bind(el, directive)
+        // should not remove on this place
         el.removeAttribute(name)
       })
     }
 
     // debugger
-    if(el[block]) return console.log(el, 'block');
+    if(el[BLOCK]) return console.log(el, 'BLOCK');
     el.childNodes.forEach(this._compileNode.bind(this))
   }
 

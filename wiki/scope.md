@@ -1,0 +1,26 @@
+# scope handler
+
+## add method to each directive
+
+- [x] cache controllers
+- [x] mount controllers when Seed bootstap
+
+## todollist
+
+- add method to components
+  * [x] todo list add click listener
+
+- directive
+  * [x] add scope
+
+- filters
+  * [x] multiple filters
+
+- 数据的遍历： v-for 仔细看
+  * [x] 创建子的seed类来实现
+  * [x] watch array
+
+- data build and binding
+  * [x] traversal by directive name, have bugs
+  * [x] traversal by recusion dom, perfect
+

@@ -19,7 +19,7 @@ const webpackConfig = {
     ]
   },
   output: {
-    filename: 'index.min.js',
+    filename: 'seed.js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
     libraryTarget: "umd",
