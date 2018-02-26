@@ -6,17 +6,18 @@
 - mock vue
 - track vue commit
 
-## todo
+## todollist
+
+- filters
+  * [x] multiple filters
 
 - 数据的遍历： v-for 仔细看
   * [x] 创建子的seed类来实现
   * [x] watch array
 
-## done
-
-- 遍历dom 来完成数据创建和绑定
-- sd-on-click not fix
-  * fixed by recusion dom
+- data build and binding
+  * [x] traversal by directive name, have bugs
+  * [x] traversal by recusion dom, perfect
 
 ## note
 
