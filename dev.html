@@ -3,7 +3,7 @@
 	<head>
 		<title>title</title>
 		<meta charset="utf-8">
-		<script src="dist/seed.js"></script>
+		<script src="./dist/seed.js"></script>
 		<style type="text/css">
 			.red {
 				color: red;
@@ -26,9 +26,10 @@
                     sd-controller="Todo"
                     sd-each="todo:todos"
                     sd-class="done:todo.done"
-                    sd-on="click:changeMessage, click:todo.toggle"
+                    sd-on="click:todo.toggle"
                     sd-text="todo.title"
                 ></li>
+                <!-- click:changeMessage,  -->
             </ul>
         </div>
 		<script>
@@ -52,6 +53,7 @@
             })
 
             Seed.controller('Todo', function (scope) {
+                // debugger
                 scope.toggle = function () {
                     scope.done = !scope.done
                 }

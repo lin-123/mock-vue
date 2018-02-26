@@ -28,17 +28,5 @@ const webpackConfig = {
   plugins: []
 };
 
-if (process.env.NODE_ENV == 'production' || process.env.ANALYZE) {
-  webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false
-    }
-  }))
-}
-
-if (process.env.ANALYZE) {
-  const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-  webpackConfig.plugins.push(new BundleAnalyzerPlugin())
-}
 
 module.exports = webpackConfig

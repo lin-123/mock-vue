@@ -1,6 +1,6 @@
 const Binding = require('./binding')
 const Controllers = require('./controllers')
-const {BLOCK, CONTROLLER} = require('./config')
+const {BLOCK, EACH, CONTROLLER} = require('./config')
 
 class Seed {
   constructor({el, data, options}) {
@@ -21,6 +21,34 @@ class Seed {
     this._extension()
   }
 
+  _compileNode(el) {
+    if(el.nodeType === 3) return;
+
+    // if has controller attribute : should build by relation scope
+    if(el.attributes && el.attributes.length){
+      const build = (name, value) => {
+        const directive =Binding.parse(name, value)
+        if(!directive) return;
+        this._bind(el, directive)
+        el.removeAttribute(name)
+      }
+
+      // this should have concept of scope
+      const ctrl = el.getAttribute(CONTROLLER)
+      const isEach = el.getAttribute(EACH)
+      // if not current controller, build controller
+      if(ctrl != this.controllerName && isEach) return build(EACH, isEach);
+
+      // normal compile node
+      // attrs should copy out
+      const attrs = [].map.call(el.attributes, ({name, value}) => ({name, value}))
+      attrs.forEach(({name, value}) => build(name, value))
+      el.childNodes.forEach(this._compileNode.bind(this))
+    }
+
+  }
+
+
   destroy() {
     // clean scene: call directives unbind
     for( let bindKey in this._bindings) {
@@ -40,32 +68,6 @@ class Seed {
     const controller = Controllers[this.controllerName]
     if(!controller) throw new Error('controller not exist');
     controller.call(null, this.scope, this)
-  }
-
-  _compileNode(el) {
-    if(el.nodeType === 3) return;
-
-    // sd-each node should not build in parent workpace
-    if(el.attributes && el.attributes.length){
-      // attrs should copy out
-      const attrs = [].map.call(el.attributes, ({name, value}) => ({name, value}))
-
-      // if(attrs.find(({name, value}) => name == CONTROLLER && value != this.controllerName ))
-      //   return console.log(name, 'controller', attrs, CONTROLLER);
-
-      attrs.forEach(({name, value}) => {
-        const directive = Binding.parse(name, value)
-        if(!directive) return;
-
-        this._bind(el, directive)
-        // should not remove on this place
-        el.removeAttribute(name)
-      })
-    }
-
-    // debugger
-    if(el[BLOCK]) return console.log(el, 'BLOCK');
-    el.childNodes.forEach(this._compileNode.bind(this))
   }
 
   _bind(el, directive) {

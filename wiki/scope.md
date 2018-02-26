@@ -3,6 +3,7 @@
 ## change format for directive class blabla
 
 - [x] sd-on-click="changeMessage" => sd-on="click:changeMessage"
+- [x] sd-controller and sd-each working
 
 ## add method to each directive
 
