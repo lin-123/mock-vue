@@ -1,7 +1,7 @@
 # scope handler
 
-
 ## change format for directive class blabla
+
 - [x] sd-on-click="changeMessage" => sd-on="click:changeMessage"
 
 ## add method to each directive

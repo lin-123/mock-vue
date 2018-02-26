@@ -3,19 +3,19 @@ const Controllers = require('./controllers')
 const {BLOCK, CONTROLLER} = require('./config')
 
 class Seed {
-  constructor(root, scope, options) {
-    if(typeof root == 'string') root = document.getElementById(root)
-    this.el = root
+  constructor({el, data, options}) {
+    if(typeof el == 'string') el = document.querySelector(el)
+    this.el = el
     this.controllerName = this.el.getAttribute(CONTROLLER)
     // internal copy
     this._bindings = {}
     // external interface
     this.scope = {}
     this._options = options || {}
-    this._compileNode(root)
+    this._compileNode(this.el)
 
-    for(var variable in scope){
-      this.scope[variable] = scope[variable]
+    for(var variable in data){
+      this.scope[variable] = data[variable]
     }
     // 时序问题， 必须要在this.scope = scope 之后再去extension
     this._extension()

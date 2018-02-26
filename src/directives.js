@@ -76,13 +76,13 @@ module.exports = {
                 }
             })
         },
-        buildHtml(element) {
-            const node = this.el.cloneNode(true)
-            return new Seed(node, element, {
+        buildHtml(data) {
+            const el = this.el.cloneNode(true)
+            return new Seed({ el, data, options: {
                 // regexp
                 eachPrefixRE: new RegExp(`^${this.arg}.`),
                 parentScope: this.seed
-            })
+            } })
         }
     }
 
