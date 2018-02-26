@@ -1,5 +1,9 @@
 # scope handler
 
+## scope communication
+
+- [ ] todo controller call todolist controller method
+
 ## change format for directive class blabla
 
 - [x] sd-on-click="changeMessage" => sd-on="click:changeMessage"

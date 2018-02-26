@@ -12,7 +12,6 @@ module.exports = {
     on: {
         update: function (handler) {
             const {handlers = {}, arg: event, el, seed} = this
-            // console.log('update on click: ', event, el, handler);
 
             if (handlers[event]) el.removeEventListener(event, handlers[event]);
 

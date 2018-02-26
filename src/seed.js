@@ -1,6 +1,6 @@
 const Binding = require('./binding')
 const Controllers = require('./controllers')
-const {BLOCK, EACH, CONTROLLER} = require('./config')
+const {prefix, BLOCK, EACH, CONTROLLER} = require('./config')
 
 class Seed {
   constructor({el, data, options}) {
@@ -27,7 +27,7 @@ class Seed {
     // if has controller attribute : should build by relation scope
     if(el.attributes && el.attributes.length){
       const build = (name, value) => {
-        const directive =Binding.parse(name, value)
+        const directive =Binding.parse(name, value.trim())
         if(!directive) return;
         this._bind(el, directive)
         el.removeAttribute(name)
@@ -42,7 +42,10 @@ class Seed {
       // normal compile node
       // attrs should copy out
       const attrs = [].map.call(el.attributes, ({name, value}) => ({name, value}))
-      attrs.forEach(({name, value}) => build(name, value))
+      attrs.forEach(({name, value}) => {
+        if(name.indexOf(prefix+'-') == -1 || name == CONTROLLER) return;
+        value.split(',').forEach(expression => build(name, expression))
+      })
       el.childNodes.forEach(this._compileNode.bind(this))
     }
 
@@ -91,8 +94,10 @@ class Seed {
     Object.defineProperty(this.scope, variable, {
       get: () => this._bindings[variable].value,
       set: (newVal) => {
+
         this._bindings[variable].value = newVal
         this._bindings[variable].directives.forEach( (directive)=> {
+
           directive.update(newVal)
         })
       }

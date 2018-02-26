@@ -26,10 +26,10 @@
                     sd-controller="Todo"
                     sd-each="todo:todos"
                     sd-class="done:todo.done"
-                    sd-on="click:todo.toggle"
+                    sd-on="click:changeMessage, click:todo.toggle"
                     sd-text="todo.title"
                 ></li>
-                <!-- click:changeMessage,  -->
+
             </ul>
         </div>
 		<script>
@@ -56,6 +56,10 @@
                 // debugger
                 scope.toggle = function () {
                     scope.done = !scope.done
+                }
+                // should call TodoList.changeMessage
+                scope.changeMessage = function () {
+                    console.log('haha')
                 }
             })
 

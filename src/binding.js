@@ -2,8 +2,8 @@ const Filters = require('./filters')
 const Directives = require('./directives')
 const {prefix, CONTROLLER} = require('./config')
 
-class Directive {
-  constructor(name, value, options = {}) {
+class Binding {
+  constructor(name, value) {
     const key = name.substr(prefix.length + 1)
 
     let [, arg, noArg] = value.match(/(^\w+):(.+)/) || []
@@ -55,7 +55,7 @@ class Directive {
 
 module.exports = {
   parse(name, value) {
-    if(name.indexOf(prefix+'-') == -1 || name == CONTROLLER) return;
-    return new Directive(name, value)
+
+    return new Binding(name, value)
   }
 }
