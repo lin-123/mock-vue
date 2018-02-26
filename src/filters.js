@@ -9,6 +9,7 @@ module.exports = {
     },
 
     delegate: function (handler, selector) {
+        debugger
         return function (e) {
             if (e.target.webkitMatchesSelector(selector)) {
                 handler.apply(this, arguments)

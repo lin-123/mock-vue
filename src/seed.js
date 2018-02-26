@@ -1,4 +1,4 @@
-const Directive = require('./directive')
+const Binding = require('./binding')
 const Controllers = require('./controllers')
 const {BLOCK, CONTROLLER} = require('./config')
 
@@ -38,12 +38,8 @@ class Seed {
 
   _extension() {
     const controller = Controllers[this.controllerName]
-    if(!controller) return;
-
-    for(let ext in controller) {
-      if(this.scope[ext]) console.warn('extension already exist, will be overwritten. extension=', ext);
-      this.scope[ext] = controller[ext]
-    }
+    if(!controller) throw new Error('controller not exist');
+    controller.call(null, this.scope, this)
   }
 
   _compileNode(el) {
@@ -58,7 +54,7 @@ class Seed {
       //   return console.log(name, 'controller', attrs, CONTROLLER);
 
       attrs.forEach(({name, value}) => {
-        const directive = Directive.parse(name, value)
+        const directive = Binding.parse(name, value)
         if(!directive) return;
 
         this._bind(el, directive)
