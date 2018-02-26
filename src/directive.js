@@ -6,16 +6,35 @@ class Directive {
   constructor(name, value) {
     const noPrefix = name.substr(prefix.length + 1)
     const [key, arg] = noPrefix.split('-')
-    const [variable, filter] = value.split('|').map(i => i.trim())
+    const [variable, ...filters] = value.split('|').map(i => i.trim())
 
     // for directives on method
     this.arg  = arg
     // for seed
     this.variable  = variable
-
+    this._parseFilters(filters)
     this._buildUpdate(key)
+  }
 
-    this._filter = Filters[filter]
+  _parseFilters(filters) {
+    if(filters.length) {
+      this._filters = []
+      filters.forEach(filter => {
+        const [name, ...args] = filter.split(/\s+/)
+        const apply = Filters[name]
+        if(!apply) throw new Error('invalid filter ' + name + args)
+        this._filters.push({apply, args})
+      })
+    }
+  }
+
+  _applyFilters(value) {
+    let tmpVal = value
+    this._filters.forEach(({apply, args}) => {
+      args.unshift(tmpVal)
+      tmpVal = apply.apply(apply, args)
+    })
+    return tmpVal
   }
 
   _buildUpdate(key) {
@@ -28,8 +47,7 @@ class Directive {
   }
 
   update(newVal) {
-    const {_filter} = this
-    this._update(_filter ? _filter(newVal):newVal)
+    this._update(this._filters ? this._applyFilters(newVal) : newVal)
   }
 }
 
