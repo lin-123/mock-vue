@@ -44,8 +44,8 @@ class Seed {
 
   _compileNode(el) {
     if(el.nodeType === 3) return;
-    // return console.log('text node');
 
+    // sd-each node should not build in parent workpace
     if(el.attributes && el.attributes.length){
       // attrs should copy out
       const attrs = [].map.call(el.attributes, ({name, value}) => ({name, value}))
