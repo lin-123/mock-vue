@@ -4,9 +4,11 @@ const {prefix, CONTROLLER} = require('./config')
 
 class Directive {
   constructor(name, value, options = {}) {
-    const noPrefix = name.substr(prefix.length + 1)
-    const [key, arg] = noPrefix.split('-')
-    const [variable, ...filters] = value.split('|').map(i => i.trim())
+    const key = name.substr(prefix.length + 1)
+
+    let [, arg, noArg] = value.match(/(^\w+):(.+)/) || []
+    noArg = noArg?noArg:value
+    const [variable, ...filters] = noArg.split('|').map(i => i.trim())
 
     // for directives on method
     this.arg  = arg
