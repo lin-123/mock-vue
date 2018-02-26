@@ -8,6 +8,10 @@
 
 ## todollist
 
+- add scope and components
+  * []
+
+
 - filters
   * [x] multiple filters
 
@@ -59,10 +63,12 @@ module.exports = webpackConfig
 ```
 
 
-## track by commit
+## command
 
-- `➜  vue git:(314983973) ✗ ` copy current commit tag[314983973]
-- `➜  vue git:(314983973) ✗ git log --graph --oneline --all`
-- `/314983973` search current commit.
-- click up button on keyboard to move terminal text up
-- `➜  vue git:(314983973) ✗ gco 23a2bde88` copy next commit tag
+- track by commit
+  * `➜  vue git:(314983973) ✗ ` copy current commit tag[314983973]
+  * `➜  vue git:(314983973) ✗ git log --graph --oneline --all`
+  * `/314983973` search current commit.
+  * click up button on keyboard to move terminal text up
+  * `➜  vue git:(314983973) ✗ gco 23a2bde88` copy next commit tag
+- git difftool -t vimdiff -y HEAD~1
