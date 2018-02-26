@@ -1,4 +1,4 @@
-const {block} = require('./config')
+const {block, mutatorMethods} = require('./config')
 module.exports = {
     text: function (value) {
         // debugger
@@ -59,13 +59,23 @@ module.exports = {
             let str = ''
             // clear childSeeds before nodes
             this.childSeeds.forEach(seed => seed.destroy())
+            this.childSeeds = []
 
+            this.watchArray(collection)
             // create new nodes
             collection.forEach(element => {
                 const seed = this.buildHtml(element)
                 this.childSeeds.push(seed)
                 this.container.append(seed.el)
             });
+        },
+        watchArray(collection) {
+            mutatorMethods.forEach(method => {
+                collection[method] = (...args) => {
+                    Array.prototype[method].call(collection, ...args)
+                    this.update(collection)
+                }
+            })
         },
         buildHtml(element) {
             const data = Object.keys(element).reduce((pre, cur) => {
