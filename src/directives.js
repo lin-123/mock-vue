@@ -78,12 +78,12 @@ module.exports = {
             })
         },
         buildHtml(element) {
-            const data = Object.keys(element).reduce((pre, cur) => {
-                pre[this.arg + '.' + cur] = element[cur]
-                return pre
-            }, {})
             const node = this.el.cloneNode(true)
-            return new Seed(node, data)
+            return new Seed(node, element, {
+                // regexp
+                eachPrefixRE: new RegExp(`^${this.arg}.`),
+                parentScope: this.seed
+            })
         }
     }
 

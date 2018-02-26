@@ -3,10 +3,8 @@ const Filters = require('./filters')
 const Directives = require('./directives')
 
 class Main {
-  constructor(root, scope) {
-    if(typeof root == 'string') root = document.getElementById(root)
-
-    return new Seed(root, scope)
+  constructor(...args) {
+    return new Seed(...args)
   }
 
   static filter(name, fn) {

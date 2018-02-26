@@ -11,6 +11,8 @@
 - add scope and components
   * []
 
+- directive
+  * [x] add scope
 
 - filters
   * [x] multiple filters

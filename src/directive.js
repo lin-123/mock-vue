@@ -3,7 +3,7 @@ const Directives = require('./directives')
 const {prefix} = require('./config')
 
 class Directive {
-  constructor(name, value) {
+  constructor(name, value, options = {}) {
     const noPrefix = name.substr(prefix.length + 1)
     const [key, arg] = noPrefix.split('-')
     const [variable, ...filters] = value.split('|').map(i => i.trim())
