@@ -43,12 +43,19 @@ module.exports = {
             this.el.setAttribute(block, true)
             this.container = this.el.parentNode
             this.el.parentNode.removeChild(this.el)
+            this.childSeeds = []
         },
         update(collection) {
             let str = ''
-            this.el.removeAttribute(block)
+            // clear before nodes
+            // this.childSeeds.forEach(seed => seed.destroy())
+
+            // dont need to remove
+            // this.el.removeAttribute(block)
+            // create new nodes
             collection.forEach(element => {
                 const seed = this.buildHtml(element)
+                // this.childSeeds.push(seed)
                 this.container.append(seed.el)
             });
         },
@@ -58,6 +65,8 @@ module.exports = {
                 return pre
             }, {})
             const node = this.el.cloneNode(true)
+            // return {}
+            // debugger
             return new Seed(node, data)
         }
     }
