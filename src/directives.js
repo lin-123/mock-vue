@@ -40,22 +40,30 @@ module.exports = {
 
     each: {
         bind() {
-            this.el.setAttribute(block, true)
-            this.container = this.el.parentNode
-            this.el.parentNode.removeChild(this.el)
+            this.el[block] = true
+            // this.el.setAttribute(block, true)
+            const ctn = this.container = this.el.parentNode
+            this.marker = document.createComment('sd-each-' + this.arg + '-marker')
+            ctn.insertBefore(this.marker, this.el)
+
+            this.container.removeChild(this.el)
             this.childSeeds = []
+        },
+        unbind() {
+            // this el and bindings will be remove, so dont need to clear this memery
+            // should remove if in attribute
+            // this.el.removeAttribute(block)
+            // delete this.el[block]
         },
         update(collection) {
             let str = ''
-            // clear before nodes
-            // this.childSeeds.forEach(seed => seed.destroy())
+            // clear childSeeds before nodes
+            this.childSeeds.forEach(seed => seed.destroy())
 
-            // dont need to remove
-            // this.el.removeAttribute(block)
             // create new nodes
             collection.forEach(element => {
                 const seed = this.buildHtml(element)
-                // this.childSeeds.push(seed)
+                this.childSeeds.push(seed)
                 this.container.append(seed.el)
             });
         },
@@ -65,8 +73,6 @@ module.exports = {
                 return pre
             }, {})
             const node = this.el.cloneNode(true)
-            // return {}
-            // debugger
             return new Seed(node, data)
         }
     }

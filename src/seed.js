@@ -46,7 +46,7 @@ class Seed {
     }
 
     // debugger
-    if(el.getAttribute(block)) return console.log(el, 'block');
+    if(el[block]) return console.log(el, 'block');
     el.childNodes.forEach(this._compileNode.bind(this))
   }
 
