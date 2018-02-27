@@ -1,33 +1,37 @@
 const Emitter = require('emitter')
 const Binding = require('./binding')
 const Controllers = require('./controllers')
-const {prefix, BLOCK, EACH, CONTROLLER} = require('./config')
+const {prefix, BLOCK, DATA, EACH, CONTROLLER} = require('./config')
 
 class Seed {
   constructor({el, data, options}) {
     if(typeof el == 'string') el = document.querySelector(el)
     this.el = el
-    this.controllerName = this.el.getAttribute(CONTROLLER)
+
+    const controllerName = this.el.getAttribute(CONTROLLER)
+    this.el.removeAttribute(CONTROLLER)
+
     // internal copy
     this._bindings = {}
     // external interface
     this.scope = {}
     this._options = options || {}
-    this._compileNode(this.el)
+    this._compileNode(this.el, true)
 
     if(options) {
       ;['eachIdx', 'collection'].forEach(key => {
         this[key] = options[key]
       })
     }
+
     for(var variable in data){
       this.scope[variable] = data[variable]
     }
     // 时序问题， 必须要在this.scope = scope 之后再去extension
-    this._extension()
+    this._extension(controllerName)
   }
 
-  _compileNode(el) {
+  _compileNode(el, root) {
     if(el.nodeType === 3) return;
 
     // if has controller attribute : should build by relation scope
@@ -74,8 +78,8 @@ class Seed {
     this.el.parentNode.removeChild(this.el)
   }
 
-  _extension() {
-    const controller = Controllers[this.controllerName]
+  _extension(controllerName) {
+    const controller = Controllers[controllerName]
 
     if(!controller) return;
     controller.call(null, this.scope, this)

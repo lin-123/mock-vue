@@ -1,6 +1,16 @@
 # scope handler
 
+## [f1ed54bc8] nest controller
+
+> multiple root controllers page can exist in one page
+> a root controller can have many components
+
+- [x] traversal root controller
+- [ ] recusive child controller, and new Seed instance
+- [ ] get parent scope data and root scope data
+
 ## [a6b7257] todo demo kinda works
+
 - [x] add sd-checked directive
 - [ ] fix each checkbox status not sync to parent seed todos
 - [x] fix filter no arg
