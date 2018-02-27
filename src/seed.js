@@ -80,13 +80,13 @@ class Seed {
     let scopeOwner = this
     const epr = this._options.eachPrefixRE
     let {variable} = directive
+
     if(epr) {
-      // current scope
-      variable = variable.replace(epr, '')
-    } else if(this._options.parentScope) {
-      // parent scope
-      debugger
-      scopeOwner = this._options.parentScope
+      if(epr.test(variable)) {
+        variable = variable.replace(epr, '')
+      } else {
+        scopeOwner = this._options.parentScope
+      }
     }
 
     if(!scopeOwner._bindings[variable]) scopeOwner._createBinding(variable);

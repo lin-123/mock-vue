@@ -3,7 +3,7 @@
 
 ## [08e7992] scope communication
 - can use class extends, extends parent scope -- better
-- [ ] todo controller call todolist controller method
+- [x] todo controller call todolist controller method
   * if child controller call parent controllers method, should bind to parent seed
 
 ## change format for directive class blabla
