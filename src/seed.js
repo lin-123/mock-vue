@@ -77,12 +77,20 @@ class Seed {
     directive.el = el
     directive.seed = this
 
+    let scopeOwner = this
     const epr = this._options.eachPrefixRE
     let {variable} = directive
-    variable = epr ? variable.replace(epr, ''):variable
+    if(epr) {
+      // current scope
+      variable = variable.replace(epr, '')
+    } else if(this._options.parentScope) {
+      // parent scope
+      debugger
+      scopeOwner = this._options.parentScope
+    }
 
-    if(!this._bindings[variable]) this._createBinding(variable);
-    this._bindings[variable].directives.push(directive)
+    if(!scopeOwner._bindings[variable]) scopeOwner._createBinding(variable);
+    scopeOwner._bindings[variable].directives.push(directive)
     if(directive.bind) directive.bind.call(directive);
   }
 
@@ -94,10 +102,8 @@ class Seed {
     Object.defineProperty(this.scope, variable, {
       get: () => this._bindings[variable].value,
       set: (newVal) => {
-
         this._bindings[variable].value = newVal
-        this._bindings[variable].directives.forEach( (directive)=> {
-
+        this._bindings[variable].directives.forEach( (directive)=> {``
           directive.update(newVal)
         })
       }

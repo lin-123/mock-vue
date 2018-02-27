@@ -51,16 +51,16 @@
                     seed.destroy()
                 }
             })
-
+            debugger
             Seed.controller('Todo', function (scope) {
                 // debugger
                 scope.toggle = function () {
                     scope.done = !scope.done
                 }
                 // should call TodoList.changeMessage
-                scope.changeMessage = function () {
-                    console.log('haha')
-                }
+                // scope.changeMessage = function () {
+                //     console.log('haha')
+                // }
             })
 
             var s = Date.now()
