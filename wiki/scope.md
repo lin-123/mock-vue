@@ -1,5 +1,9 @@
 # scope handler
 
+## [a6b7257] todo demo kinda works
+- [x] add sd-checked directive
+- [ ] fix each checkbox status not sync to parent seed todos
+
 ## [1d7a94e] emmitter
 - `npm install component-emitter`
 - update webpack.config.js

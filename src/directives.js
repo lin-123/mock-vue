@@ -9,22 +9,47 @@ module.exports = {
     class: function (value) {
         this.el.classList[value ? 'add' : 'remove'](this.arg)
     },
+
+    // emit change
+    checked: {
+        bind() {
+            this.handler = () => {
+                this.seed.scope[this.variable] = this.el.checked
+            }
+            this.el.addEventListener('change', this.handler)
+        },
+        update(flag) {
+            this.el.checked = flag
+        },
+        unbind() {
+            this.el.removeEventListener('change', this.handler)
+        }
+    },
+    // listen change event
+    // return event
+    // el            : e.currentTarget,
+    // originalEvent : e,
+    // directive     : self,
+    // seed          : self.seed
     on: {
         update: function (handler) {
-            const {handlers = {}, arg: event, el, seed} = this
-
-            if (handlers[event]) el.removeEventListener(event, handlers[event]);
+            const {arg: event, el, seed} = this
+            if (this.handler) el.removeEventListener(event, this.handler);
 
             if (handler) {
-                // bind scope to handler
-                handler = handler.bind(seed)
-                el.addEventListener(event, handler)
-                this.handlers = {[event]: handler, ...handlers}
+                this.handler = (e) => {
+                    return handler({
+                        el,
+                        event: e,
+                        seed,
+                    })
+                }
+                el.addEventListener(event, this.handler)
             }
         },
         unbind: function () {
-            if (this.handlers) {
-                this.el.removeEventListener(this.arg, this.handlers[this.arg])
+            if (this.handler) {
+                this.el.removeEventListener(this.arg, this.handler)
             }
         },
         customFilter: function (handler, selectors) {

@@ -28,7 +28,7 @@ class Seed {
     // if has controller attribute : should build by relation scope
     if(el.attributes && el.attributes.length){
       const build = (name, value) => {
-        const directive =Binding.parse(name, value.trim())
+        const directive =new Binding(name, value.trim())
         if(!directive) return;
         this._bind(el, directive)
         el.removeAttribute(name)
@@ -47,8 +47,9 @@ class Seed {
         if(name.indexOf(prefix+'-') == -1 || name == CONTROLLER) return;
         value.split(',').forEach(expression => build(name, expression))
       })
-      el.childNodes.forEach(this._compileNode.bind(this))
     }
+
+    el.childNodes.forEach(this._compileNode.bind(this))
 
   }
 
@@ -70,7 +71,8 @@ class Seed {
 
   _extension() {
     const controller = Controllers[this.controllerName]
-    if(!controller) throw new Error('controller not exist');
+
+    if(!controller) return;
     controller.call(null, this.scope, this)
   }
 
@@ -85,6 +87,7 @@ class Seed {
     if(epr) {
       if(epr.test(variable)) {
         variable = variable.replace(epr, '')
+        directive.variable = variable
       } else {
         scopeOwner = this._options.parentScope
       }

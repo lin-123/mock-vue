@@ -53,9 +53,4 @@ class Binding {
   }
 }
 
-module.exports = {
-  parse(name, value) {
-
-    return new Binding(name, value)
-  }
-}
+module.exports = Binding

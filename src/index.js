@@ -16,6 +16,14 @@ class Main extends Seed {
   static directive(name, fn) {
     Directives[name] = fn
   }
+
+  static plant() {
+    return this.controller.apply(this, arguments)
+  }
+
+  static sprout(opt) {
+    return new Seed(opt)
+  }
 }
 
 module.exports = Main
