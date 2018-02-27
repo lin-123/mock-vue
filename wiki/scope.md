@@ -1,5 +1,22 @@
 # scope handler
 
+## [1d7a94e] emmitter
+- `npm install component-emitter`
+- update webpack.config.js
+  ```
+  ...
+  const webpackConfig = {
+    ...
+    resolve: {
+      alias: {
+        'emitter$': 'component-emitter',
+      }
+    },
+    ...
+  }
+  ...
+  ```
+- test emitter
 
 ## [08e7992] scope communication
 - can use class extends, extends parent scope -- better
