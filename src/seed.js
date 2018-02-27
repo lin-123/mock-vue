@@ -1,33 +1,37 @@
 const Emitter = require('emitter')
 const Binding = require('./binding')
 const Controllers = require('./controllers')
-const {prefix, BLOCK, EACH, CONTROLLER} = require('./config')
+const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER} = require('./config')
 
 class Seed {
   constructor({el, data, options}) {
     if(typeof el == 'string') el = document.querySelector(el)
     this.el = el
-    this.controllerName = this.el.getAttribute(CONTROLLER)
+
+    const controllerName = this.el.getAttribute(CONTROLLER)
+    this.el.removeAttribute(CONTROLLER)
+
     // internal copy
     this._bindings = {}
     // external interface
     this.scope = {}
     this._options = options || {}
-    this._compileNode(this.el)
+    this._compileNode(this.el, true)
 
     if(options) {
       ;['eachIdx', 'collection'].forEach(key => {
         this[key] = options[key]
       })
     }
+
     for(var variable in data){
       this.scope[variable] = data[variable]
     }
     // 时序问题， 必须要在this.scope = scope 之后再去extension
-    this._extension()
+    this._extension(controllerName)
   }
 
-  _compileNode(el) {
+  _compileNode(el, root) {
     if(el.nodeType === 3) return;
 
     // if has controller attribute : should build by relation scope
@@ -42,8 +46,8 @@ class Seed {
       // this should have concept of scope
       const ctrl = el.getAttribute(CONTROLLER)
       const isEach = el.getAttribute(EACH)
-      // if not current controller, build controller
-      if(ctrl != this.controllerName && isEach) return build(EACH, isEach);
+      if(isEach) return build(EACH, isEach);
+      if(ctrl) return new Seed({el, options: {parentSeed: this}});
 
       // normal compile node
       // attrs should copy out
@@ -74,8 +78,8 @@ class Seed {
     this.el.parentNode.removeChild(this.el)
   }
 
-  _extension() {
-    const controller = Controllers[this.controllerName]
+  _extension(controllerName) {
+    const controller = Controllers[controllerName]
 
     if(!controller) return;
     controller.call(null, this.scope, this)
@@ -85,22 +89,34 @@ class Seed {
     directive.el = el
     directive.seed = this
 
-    let scopeOwner = this
-    const epr = this._options.eachPrefixRE
+    let scopeOwner = this._getScopeOwner(directive)
     let {variable} = directive
-
-    if(epr) {
-      if(epr.test(variable)) {
-        variable = variable.replace(epr, '')
-        directive.variable = variable
-      } else {
-        scopeOwner = this._options.parentScope
-      }
-    }
 
     if(!scopeOwner._bindings[variable]) scopeOwner._createBinding(variable);
     scopeOwner._bindings[variable].directives.push(directive)
     if(directive.bind) directive.bind.call(directive);
+  }
+
+  _getScopeOwner(directive) {
+    let scopeOwner = this
+    const epr = this._options.eachPrefixRE
+    let {variable} = directive
+
+    if(epr && epr.test(variable)) {
+      variable = variable.replace(epr, '')
+      directive.variable = variable
+    }
+
+    while(regexps.ansesstor.test(directive.variable) && scopeOwner._options.parentSeed) {
+      scopeOwner = scopeOwner._options.parentSeed
+      directive.variable = directive.variable.replace(regexps.ansesstor, '')
+    }
+
+    if(regexps.root.test(variable)) {
+      while(scopeOwner._options.parentSeed) { scopeOwner = scopeOwner._options.parentSeed}
+      directive.variable = variable.replace(regexps.root, '')
+    }
+    return scopeOwner
   }
 
   _createBinding(variable) {
