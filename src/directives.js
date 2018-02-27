@@ -7,7 +7,14 @@ module.exports = {
         this.el.style.display = value ? '' : 'none'
     },
     class: function (value) {
-        this.el.classList[value ? 'add' : 'remove'](this.arg)
+        if(this.arg) {
+            this.el.classList[value ? 'add' : 'remove'](this.arg)
+            return;
+        }
+        this.el.classList.remove(this.lastClass)
+        this.el.classList.add(value)
+        this.lastClass = value
+
     },
 
     // emit change
