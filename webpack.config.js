@@ -18,6 +18,11 @@ const webpackConfig = {
       },
     ]
   },
+  resolve: {
+    alias: {
+      'emitter$': 'component-emitter',
+    }
+  },
   output: {
     filename: 'seed.js',
     path: path.resolve(__dirname, 'dist'),

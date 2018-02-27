@@ -1,3 +1,4 @@
+const Emitter = require('emitter')
 const Binding = require('./binding')
 const Controllers = require('./controllers')
 const {prefix, BLOCK, EACH, CONTROLLER} = require('./config')

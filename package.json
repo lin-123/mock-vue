@@ -26,5 +26,8 @@
     "webpack-merge": "^4.1.0"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "component-emitter": "^1.2.1"
+  }
 }
