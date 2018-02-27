@@ -6,8 +6,8 @@
 > a root controller can have many components
 
 - [x] traversal root controller
-- [ ] recusive child controller, and new Seed instance
-- [ ] get parent scope data and root scope data
+- [x] recusive child controller, and new Seed instance
+- [x] get parent scope data and root scope data
 
 ## [a6b7257] todo demo kinda works
 

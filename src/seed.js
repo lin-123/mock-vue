@@ -1,7 +1,7 @@
 const Emitter = require('emitter')
 const Binding = require('./binding')
 const Controllers = require('./controllers')
-const {prefix, BLOCK, DATA, EACH, CONTROLLER} = require('./config')
+const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER} = require('./config')
 
 class Seed {
   constructor({el, data, options}) {
@@ -46,8 +46,8 @@ class Seed {
       // this should have concept of scope
       const ctrl = el.getAttribute(CONTROLLER)
       const isEach = el.getAttribute(EACH)
-      // if not current controller, build controller
-      if(ctrl != this.controllerName && isEach) return build(EACH, isEach);
+      if(isEach) return build(EACH, isEach);
+      if(ctrl) return new Seed({el, options: {parentSeed: this}});
 
       // normal compile node
       // attrs should copy out
@@ -89,22 +89,34 @@ class Seed {
     directive.el = el
     directive.seed = this
 
-    let scopeOwner = this
-    const epr = this._options.eachPrefixRE
+    let scopeOwner = this._getScopeOwner(directive)
     let {variable} = directive
-
-    if(epr) {
-      if(epr.test(variable)) {
-        variable = variable.replace(epr, '')
-        directive.variable = variable
-      } else {
-        scopeOwner = this._options.parentScope
-      }
-    }
 
     if(!scopeOwner._bindings[variable]) scopeOwner._createBinding(variable);
     scopeOwner._bindings[variable].directives.push(directive)
     if(directive.bind) directive.bind.call(directive);
+  }
+
+  _getScopeOwner(directive) {
+    let scopeOwner = this
+    const epr = this._options.eachPrefixRE
+    let {variable} = directive
+
+    if(epr && epr.test(variable)) {
+      variable = variable.replace(epr, '')
+      directive.variable = variable
+    }
+
+    while(regexps.ansesstor.test(directive.variable) && scopeOwner._options.parentSeed) {
+      scopeOwner = scopeOwner._options.parentSeed
+      directive.variable = directive.variable.replace(regexps.ansesstor, '')
+    }
+
+    if(regexps.root.test(variable)) {
+      while(scopeOwner._options.parentSeed) { scopeOwner = scopeOwner._options.parentSeed}
+      directive.variable = variable.replace(regexps.root, '')
+    }
+    return scopeOwner
   }
 
   _createBinding(variable) {

@@ -112,7 +112,7 @@ module.exports = {
             return new Seed({ el, data, options: {
                 // regexp
                 eachPrefixRE: new RegExp(`^${this.arg}.`),
-                parentScope: this.seed,
+                parentSeed: this.seed,
                 eachIdx,
                 collection
             } })
