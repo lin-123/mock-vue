@@ -86,8 +86,8 @@ module.exports = {
 
             this.watchArray(collection)
             // create new nodes
-            collection.forEach(element => {
-                const seed = this.buildHtml(element)
+            collection.forEach((element, idx) => {
+                const seed = this.buildHtml(element, idx, collection)
                 this.childSeeds.push(seed)
                 this.container.append(seed.el)
             });
@@ -100,12 +100,14 @@ module.exports = {
                 }
             })
         },
-        buildHtml(data) {
+        buildHtml(data, eachIdx, collection) {
             const el = this.el.cloneNode(true)
             return new Seed({ el, data, options: {
                 // regexp
                 eachPrefixRE: new RegExp(`^${this.arg}.`),
-                parentScope: this.seed
+                parentScope: this.seed,
+                eachIdx,
+                collection
             } })
         }
     }

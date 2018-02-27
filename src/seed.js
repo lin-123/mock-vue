@@ -15,6 +15,11 @@ class Seed {
     this._options = options || {}
     this._compileNode(this.el)
 
+    if(options) {
+      ;['eachIdx', 'collection'].forEach(key => {
+        this[key] = options[key]
+      })
+    }
     for(var variable in data){
       this.scope[variable] = data[variable]
     }
