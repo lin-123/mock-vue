@@ -42,7 +42,7 @@
             </ul>
             <div id="footer">
                 Total: <span sd-text="total < todos"></span> |
-                Remaining: <span sd-text="remaining"></span> |
+                Remaining: <span sd-text="todos | remaining"></span> |
                 Completed: <span sd-text="completed < remaining total"></span>
                 <br>
                 <a class="all" sd-on="click:setFilter">Show All</a> |
@@ -61,6 +61,13 @@
                 { text: 'computed properties', done: false },
                 { text: 'parse textnodes', done: false }
             ]
+
+            Seed.filter('remaining', (todos) => {
+                debugger
+                return todos.reduce(function (count, todo) {
+                    return count + (todo.done ? 0 : 1)
+                }, 0)
+            })
 
             Seed.controller('Todos', function (scope, seed) {
 

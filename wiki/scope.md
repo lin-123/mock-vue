@@ -1,6 +1,11 @@
 # scope handler
 
 ## [6d81bff63] compute value
+> when todos array method be called, should refresh scope.todos bindings.
+
+## [6d81bff63] better unbind/destroy
+> clear all the memery of this vm
+> so should bind this vm values to api
 
 ## [f1ed54bc8] nest controller
 

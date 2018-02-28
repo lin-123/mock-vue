@@ -103,7 +103,11 @@ module.exports = {
             mutatorMethods.forEach(method => {
                 collection[method] = (...args) => {
                     Array.prototype[method].call(collection, ...args)
-                    this.update(collection)
+                    // should call scope.todos = xxx so the dom will reload
+                    console.log({method, args, collection})
+
+                    // not just update this collection
+                    // this.update(collection)
                 }
             })
         },
