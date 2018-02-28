@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="nodes"></div>
+<script>
+  function createLargeClosure()
+  {
+      var largeStr = new Array(1000000).join('x');
+      var lC = function lC() {
+          // this IS a named function
+          return largeStr;
+      };  return lC;
+  }
+
+
+  // function createSomeNodes() {
+  //   var div,
+  //   i = 100,
+  //   frag = document.createDocumentFragment();
+  //   for (;i > 0; i--) {
+  //     div = document.createElement("div");
+  //     div.appendChild(document.createTextNode(i + " - "+ new Date().toTimeString()));
+  //     frag.appendChild(div);
+  //   }
+  //   document.getElementById("nodes").appendChild(frag);
+  // }
+  // function grow() {
+  //   const arr = new Array(1000000)
+  //   x.push(arr.join('x'));
+  //   delete arr
+  //   createSomeNodes();
+  // }
+  // let schedule
+  // var x = [];
+  // const start = () => schedule = setInterval(grow,1000);
+  // const end = () => {
+  //   // delete x
+  //   x = []
+  //   clearInterval(schedule)
+  // }
+
+
+</script>
+</body>
+</html>

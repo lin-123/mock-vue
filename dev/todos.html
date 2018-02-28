@@ -29,6 +29,7 @@
         </style>
     </head>
     <body>
+        <div id="nodes"></div>
         <div id="app" sd-controller="Todos" sd-class="filter">
             <div>
                 <input placeholder="What needs to be done?" sd-on="change:addTodo">
@@ -63,7 +64,7 @@
             ]
 
             Seed.filter('remaining', (todos) => {
-                debugger
+                // debugger
                 return todos.reduce(function (count, todo) {
                     return count + (todo.done ? 0 : 1)
                 }, 0)
@@ -115,7 +116,7 @@
 
             })
 
-            Seed.bootstrap()
+            window.app = Seed.bootstrap()
 
         </script>
     </body>

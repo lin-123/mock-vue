@@ -1,7 +1,7 @@
 const Emitter = require('emitter')
 const Binding = require('./binding')
 const Controllers = require('./controllers')
-const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER} = require('./config')
+const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER, constance} = require('./config')
 
 class Seed {
   constructor({el, data, options}) {
@@ -47,7 +47,11 @@ class Seed {
       const ctrl = el.getAttribute(CONTROLLER)
       const isEach = el.getAttribute(EACH)
       if(isEach) return build(EACH, isEach);
-      if(ctrl) return new Seed({el, options: {parentSeed: this}});
+      if(ctrl) {
+        const seed = new Seed({el, options: {parentSeed: this}});
+        if(el.id) this[constance.child + id] = seed
+        return;
+      }
 
       // normal compile node
       // attrs should copy out
@@ -57,11 +61,9 @@ class Seed {
         value.split(',').forEach(expression => build(name, expression))
       })
     }
-
     el.childNodes.forEach(this._compileNode.bind(this))
 
   }
-
 
   destroy() {
     // clean scene: call directives unbind
@@ -74,6 +76,7 @@ class Seed {
       delete this._bindings[bindKey]
     }
 
+    if(this._options.parentSeed) delete this._options.parentSeed[constance.child + this.el.id]
     // rm dom
     this.el.parentNode.removeChild(this.el)
   }

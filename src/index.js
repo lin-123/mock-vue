@@ -18,17 +18,16 @@ class Main extends Seed {
   }
 
   static bootstrap(opt) {
-    let traversaling = true
+    let el = true, n=0, seed
     const app = {}
-    let n = 0
-    while(traversaling) {
-      let el = document.querySelector(`[${config.CONTROLLER}]`)
-      if(!el) return traversaling = false;
-
-      const seed = new Seed({el})
-      app[el.id || n++] = seed
+    while(el) {
+      el = document.querySelector(`[${config.CONTROLLER}]`)
+      if(!el) continue;
+      n++
+      seed = new Seed({el})
+      if(el.id) app[el.id] = seed;
     }
-    return n>1 ? app:app[0]
+    return n > 1 ? app : seed
   }
 }
 

@@ -7,6 +7,8 @@
 > clear all the memery of this vm
 > so should bind this vm values to api
 
+- [x] just delete some value. dont know how to detect
+
 ## [f1ed54bc8] nest controller
 
 > multiple root controllers page can exist in one page

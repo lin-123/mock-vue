@@ -4,6 +4,10 @@ module.exports = {
   BLOCK: 'sd-block',
   CONTROLLER: 'sd-controller',
   DATA: 'sd-data',
+
+  constance: {
+    child: '$child_'
+  },
   // compute scope
   regexps: {
     // 祖先节点： ^name
@@ -19,5 +23,8 @@ module.exports = {
     'unshift',
     'splice',
     'sort'
-  ]
+  ],
+
+  Controllers: {},
+  datum: {}
 }

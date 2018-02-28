@@ -80,10 +80,7 @@ module.exports = {
             this.childSeeds = []
         },
         unbind() {
-            // this el and bindings will be remove, so dont need to clear this memery
-            // should remove if in attribute
-            // this.el.removeAttribute(BLOCK)
-            // delete this.el[BLOCK]
+            this.childSeeds.forEach(seed => seed.destroy())
         },
         update(collection) {
             let str = ''
