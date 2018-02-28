@@ -1,7 +1,11 @@
 # scope handler
 
+## my mistake
+- set seed data by set object reference other than copy by object property
+
 ## [ca62c95a] break directives into individual files
 - [x] break directives into individual files
+
 
 ## [52272487] event delegation in sd-each
 > [javascript: 事件委托解析](http://www.imooc.com/article/16468)

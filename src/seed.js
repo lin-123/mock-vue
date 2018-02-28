@@ -24,6 +24,8 @@ class Seed {
       })
     }
 
+    // TODO
+    //   修改赋值方式， 通过引用赋值
     for(var variable in data){
       this.scope[variable] = data[variable]
     }
