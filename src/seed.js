@@ -46,12 +46,13 @@ class Seed {
       // this should have concept of scope
       const ctrl = el.getAttribute(CONTROLLER)
       const isEach = el.getAttribute(EACH)
-      if(isEach) return build(EACH, isEach);
+
       if(ctrl) {
         const seed = new Seed({el, options: {parentSeed: this}});
         if(el.id) this[constance.child + id] = seed
         return;
       }
+      if(isEach) return build(EACH, isEach);
 
       // normal compile node
       // attrs should copy out

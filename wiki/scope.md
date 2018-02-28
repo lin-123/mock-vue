@@ -5,8 +5,9 @@
 
 ## [52272487] event delegation in sd-each
 > [javascript: 事件委托解析](http://www.imooc.com/article/16468)
-- [] delegate event to current seed's parentNode which in sd-each
-  * no seed.each parameter
+- [ ] delegate event to current seed's parentNode which in sd-each
+  * [x] no seed.each parameter
+  * [ ] cannot check delegate
 
 
 ## [6d81bff63] compute value

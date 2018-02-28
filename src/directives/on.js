@@ -7,8 +7,6 @@ module.exports = {
       // debugger
       const attribute = this.directiveName + '*="' + this.expression
       this.selector = `[${attribute}]`
-      // this.el.setAttribute(attribute, true)
-
       this.delegator = opt.container
     }
   },
@@ -20,7 +18,8 @@ module.exports = {
     if(delegator && !delegator[selector]) {
       delegator[selector] = (e) => {
       // this.handler = (e) => {
-        const target = delegateCheck(el, delegator, this.selector)
+        // check target is current el
+        const target = delegateCheck(e.target, delegator, this.selector)
         if(!target) return;
         handler({ el: target, event: e, seed, })
       }
@@ -60,6 +59,7 @@ module.exports = {
   }
 }
 
+// cannot get targe, beacuase the attributes be removed
 function delegateCheck (current, top, selector) {
   if (current.webkitMatchesSelector(selector)) {
       return current
