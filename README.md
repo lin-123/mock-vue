@@ -10,6 +10,7 @@
 - bindings 将dom，data保存在内存里。
 - Object.defineProperty将bindings上的数据映射到dom上
 - 时序很重要很重要很重要！！！
+- [javascript: 事件委托解析](http://www.imooc.com/article/16468)
 
 ## vue seed.js build
 

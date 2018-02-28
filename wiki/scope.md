@@ -4,8 +4,8 @@
 - [x] break directives into individual files
 
 ## [52272487] event delegation in sd-each
-
-- [] delegate event to parentNode which in sd-each
+> [javascript: 事件委托解析](http://www.imooc.com/article/16468)
+- [] delegate event to current seed's parentNode which in sd-each
   * no seed.each parameter
 
 

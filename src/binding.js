@@ -13,6 +13,8 @@ class Binding {
     // if(arg === 'change') debugger
     // for directives on method
     this.arg  = arg
+    this.directiveName = name
+    this.expression = value
     // for seed
     this.variable  = variable
     this._parseFilters(filters)

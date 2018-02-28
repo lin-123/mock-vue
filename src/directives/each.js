@@ -61,7 +61,9 @@ function buildHtml (data, eachIdx, collection) {
       eachPrefixRE: new RegExp(`^${this.arg}.`),
       parentSeed: this.seed,
       eachIdx,
-      collection
+      collection,
+      container: this.container,
+      each: true,
     }
   })
 }
