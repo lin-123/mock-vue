@@ -1,5 +1,14 @@
 # scope handler
 
+## [ca62c95a] break directives into individual files
+- [x] break directives into individual files
+
+## [52272487] event delegation in sd-each
+
+- [] delegate event to parentNode which in sd-each
+  * no seed.each parameter
+
+
 ## [6d81bff63] compute value
 > when todos array method be called, should refresh scope.todos bindings.
 > directive value support function.

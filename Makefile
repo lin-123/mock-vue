@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: clean dev
 
 dev:
 	webpack --watch
