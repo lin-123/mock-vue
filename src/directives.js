@@ -39,10 +39,10 @@ module.exports = {
     // directive     : self,
     // seed          : self.seed
     on: {
+        fn: true,
         update: function (handler) {
             const {arg: event, el, seed} = this
             if (this.handler) el.removeEventListener(event, this.handler);
-
             if (handler) {
                 this.handler = (e) => {
                     return handler({

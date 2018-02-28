@@ -10,6 +10,7 @@ class Binding {
     noArg = noArg?noArg:value
     const [variable, ...filters] = noArg.split('|').map(i => i.trim())
 
+    // if(arg === 'change') debugger
     // for directives on method
     this.arg  = arg
     // for seed
@@ -49,6 +50,9 @@ class Binding {
   }
 
   update(newVal) {
+    if(typeof newVal === 'function' && !this.fn) {
+      newVal = newVal()
+    }
     this._update(this._filters ? this._applyFilters(newVal) : newVal)
   }
 }

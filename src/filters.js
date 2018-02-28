@@ -8,12 +8,4 @@ module.exports = {
         return value.toUpperCase()
     },
 
-    delegate: function (handler, selector) {
-        return function (e) {
-            if (e.target.webkitMatchesSelector(selector)) {
-                handler.apply(this, arguments)
-            }
-        }
-    }
-
 }

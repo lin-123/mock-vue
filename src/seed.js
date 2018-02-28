@@ -105,20 +105,20 @@ class Seed {
     const epr = this._options.eachPrefixRE
     let {variable} = directive
 
-    if(epr && epr.test(variable)) {
-      variable = variable.replace(epr, '')
-      directive.variable = variable
-    }
+    if(epr && !epr.test(variable) ) scopeOwner = scopeOwner._options.parentSeed
+    if(epr && epr.test(variable)) variable = variable.replace(epr, '')
 
-    while(regexps.ansesstor.test(directive.variable) && scopeOwner._options.parentSeed) {
+    while(regexps.ansesstor.test(variable) && scopeOwner._options.parentSeed) {
       scopeOwner = scopeOwner._options.parentSeed
-      directive.variable = directive.variable.replace(regexps.ansesstor, '')
+      variable = variable.replace(regexps.ansesstor, '')
     }
 
     if(regexps.root.test(variable)) {
       while(scopeOwner._options.parentSeed) { scopeOwner = scopeOwner._options.parentSeed}
-      directive.variable = variable.replace(regexps.root, '')
+      variable = variable.replace(regexps.root, '')
     }
+
+    directive.variable = variable
     return scopeOwner
   }
 
@@ -131,7 +131,7 @@ class Seed {
       get: () => this._bindings[variable].value,
       set: (newVal) => {
         this._bindings[variable].value = newVal
-        this._bindings[variable].directives.forEach( (directive)=> {``
+        this._bindings[variable].directives.forEach( (directive)=> {
           directive.update(newVal)
         })
       }

@@ -2,6 +2,10 @@
 
 ## [6d81bff63] compute value
 > when todos array method be called, should refresh scope.todos bindings.
+> directive value support function.
+
+- [x] sd-text="function", will call function before
+- [x] fix sd-each scope error
 
 ## [6d81bff63] better unbind/destroy
 > clear all the memery of this vm
