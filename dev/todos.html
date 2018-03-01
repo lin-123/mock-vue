@@ -42,7 +42,7 @@
             </ul>
             <div id="footer">
                 <!-- Total: <span sd-text="total < todos"></span> | -->
-                Total: <span sd-text="total"></span> |
+                Total: <span sd-text="todos | total"></span> |
                 Remaining: <span sd-text="remaining"></span> |
                 Completed: <span sd-text="completed"></span>
                 <!-- Completed: <span sd-text="completed < remaining total"></span> -->
@@ -64,6 +64,7 @@
                 { text: 'parse textnodes', done: false }
             ]
 
+            Seed.filter('total', function (todos) { return todos.length})
             Seed.controller('Todos', function (scope, seed) {
 
                 // regular properties

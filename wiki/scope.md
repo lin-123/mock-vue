@@ -1,5 +1,11 @@
 # scope handler
 
+## [5acc8a29] computed properties!!!
+
+- each should notify user when call array method such as push, pop, shift etc.
+- set up a chain for data dependency. dependency will be trigger when then source data update
+- 通过注册依赖directive来实现指定的更新。 对于each的array有watch array方法可以监控。 对于each里面的CheckBox怎么监控它的变化的。
+
 ## [88513c07] array watcher
 
 - better array watcher. just update dom fragement which's data source changed
