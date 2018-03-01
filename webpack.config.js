@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const merge = require('webpack-merge')
 
 const webpackConfig = {
+  mode: 'development',
   entry: {
     app: './src/index.js',
   },

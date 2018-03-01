@@ -5,6 +5,7 @@ const {prefix, CONTROLLER} = require('./config')
 class Binding {
   constructor(name, value) {
     const key = name.substr(prefix.length + 1)
+    debugger
 
     let [, arg, noArg] = value.match(/(^\w+):(.+)/) || []
     noArg = noArg?noArg:value
