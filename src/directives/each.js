@@ -1,7 +1,7 @@
 const {
   BLOCK,
-  mutatorMethods
 } = require('../config')
+const watchArray = require('./watchArray')
 
 module.exports = {
   bind() {
@@ -9,64 +9,46 @@ module.exports = {
     const ctn = this.container = this.el.parentNode
     this.marker = document.createComment('sd-each-' + this.arg + '-marker')
     ctn.insertBefore(this.marker, this.el)
-
     this.container.removeChild(this.el)
-    this.childSeeds = []
   },
 
   unbind() {
-    console.log('each unbind', this.el);
-
-    this.childSeeds.forEach(seed => seed.destroy())
+    if(this.collection) {
+      this.collection.forEach(({seed}) => seed.destory())
+      this.collection = null
+    }
   },
 
   update(collection) {
-    let str = ''
-    // clear childSeeds before nodes
-    this.childSeeds.forEach(seed => seed.destroy())
-    this.childSeeds = []
-
-    watchArray.call(this, collection)
+    this.unbind()
+    this.collection = collection
+    watchArray.call(this)
 
     // create new nodes
-    collection.forEach((element, idx) => {
-      const seed = buildHtml.call(this, element, idx, collection)
-      this.childSeeds.push(seed)
-      this.container.append(seed.el)
-    });
+    collection.forEach((data, i) => this.buildHtml(data, i));
   },
-}
 
-function watchArray (collection) {
-  mutatorMethods.forEach(method => {
-    collection[method] = (...args) => {
-      Array.prototype[method].call(collection, ...args)
+  buildHtml(data, idx, beforeNode = this.marker) {
+    const seed = new Seed({
+      el: this.el.cloneNode(true),
+      data,
+      options: {
+        // regexp
+        eachPrefixRE: new RegExp(`^${this.arg}.`),
+        parentSeed: this.seed,
+        container: this.container,
+        each: true,
+      }
+    })
+    this.collection[idx].seed = seed
+    this.collection[idx].$index = idx
+    // const beforeNode = idx ==0 ? this.marker:this.collection[idx-1].seed.el
+    this.container.insertBefore(seed.el, beforeNode)
+  },
 
-      this.update(collection)
-
-      // // should call scope.todos = xxx so the dom will reload
-      console.log({
-        method,
-        args,
-        collection
-      })
-    }
-  })
-}
-
-function buildHtml (data, eachIdx, collection) {
-  const el = this.el.cloneNode(true)
-  return new Seed({
-    el,
-    data,
-    options: {
-      // regexp
-      eachPrefixRE: new RegExp(`^${this.arg}.`),
-      parentSeed: this.seed,
-      eachIdx,
-      collection,
-      container: this.container,
-      each: true,
-    }
-  })
+  recorder() {
+    this.collection.forEach((data, i) => {
+      data.$index = i
+    })
+  }
 }

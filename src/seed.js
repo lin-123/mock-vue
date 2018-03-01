@@ -88,12 +88,12 @@ class Seed {
 
     if(!scopeOwner._bindings[variable]) scopeOwner._createBinding(variable);
     scopeOwner._bindings[variable].directives.push(directive)
-    if(directive.bind) directive.bind.call(directive);
-
     const binding = scopeOwner._bindings[variable]
-    if(binding && binding.value) {
-      directive.update(binding.value)
-    }
+    const bindingValue = binding && binding.value
+
+    if(directive.bind) directive.bind.call(directive, bindingValue);
+
+    if(bindingValue) directive.update(bindingValue)
   }
 
   _getScopeOwner(directive) {

@@ -1,5 +1,10 @@
 # scope handler
 
+## [88513c07] array watcher
+
+- better array watcher. just update dom fragement which's data source changed
+- [x] done
+
 ## my mistake
 - [x] set seed data by set object reference other than copy by object property
 - [x] fix seed.destroy
@@ -21,8 +26,6 @@ destroy() {
   this.el.parentNode.removeChild(this.el)
 }
 ```
-
-## [88513c07] array watcher
 
 ## [ca62c95a] break directives into individual files
 - [x] break directives into individual files
