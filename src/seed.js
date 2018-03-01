@@ -4,7 +4,7 @@ const Controllers = require('./controllers')
 const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER, constance} = require('./config')
 
 class Seed {
-  constructor({el, data, options}) {
+  constructor({el, data = {}, options}) {
     if(typeof el == 'string') el = document.querySelector(el)
     this.el = el
 
@@ -14,20 +14,10 @@ class Seed {
     // internal copy
     this._bindings = {}
     // external interface
-    this.scope = {}
+    this.scope = data
     this._options = options || {}
     this._compileNode(this.el, true)
 
-    if(options) {
-      ;['eachIdx', 'collection'].forEach(key => {
-        this[key] = options[key]
-      })
-    }
-
-    for(var variable in data){
-      this.scope[variable] = data[variable]
-    }
-    // 时序问题， 必须要在this.scope = scope 之后再去extension
     this._extension(controllerName)
   }
 
@@ -99,6 +89,11 @@ class Seed {
     if(!scopeOwner._bindings[variable]) scopeOwner._createBinding(variable);
     scopeOwner._bindings[variable].directives.push(directive)
     if(directive.bind) directive.bind.call(directive);
+
+    const binding = this._bindings[variable]
+    if(binding && binding.value) {
+      directive.update(binding.value)
+    }
   }
 
   _getScopeOwner(directive) {
@@ -126,8 +121,9 @@ class Seed {
   _createBinding(variable) {
     this._bindings[variable] = {
       directives: [],
-      value: null
+      value: this.scope[variable]
     }
+
     Object.defineProperty(this.scope, variable, {
       get: () => this._bindings[variable].value,
       set: (newVal) => {

@@ -44,9 +44,6 @@ function watchArray (collection) {
         args,
         collection
       })
-
-      // not just update this collection
-      // this.update(collection)
     }
   })
 }
