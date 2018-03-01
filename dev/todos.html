@@ -96,7 +96,8 @@
                 }
 
                 scope.removeTodo = function (e) {
-                    scope.todos.splice(e.seed.index, 1)
+                    // debugger
+                    scope.todos.splice(e.seed.$index, 1)
                     scope.remaining -= e.seed.scope.done ? 0 : 1
                 }
 

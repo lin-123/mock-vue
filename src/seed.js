@@ -4,18 +4,26 @@ const Controllers = require('./controllers')
 const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER, constance} = require('./config')
 
 class Seed {
-  constructor({el, data = {}, options}) {
+  constructor({el, data = {}, options = {}}) {
     if(typeof el == 'string') el = document.querySelector(el)
     this.el = el
     const controllerName = this.el.getAttribute(CONTROLLER)
     this.el.removeAttribute(CONTROLLER)
+    this._options = options
 
     // internal copy
     this._bindings = {}
-    // external interface
-    this.scope = data
 
-    this._options = options || {}
+    // external interface
+    const scope = this.scope = data
+    scope.$seed     = this
+    scope.$destroy  = this.destroy.bind(this)
+    // scope.$dump     = this._dump.bind(this)
+    scope.$on       = this.on.bind(this)
+    scope.$emit     = this.emit.bind(this)
+    scope.$index    = options.index
+    scope.$parent   = options.parentSeed && options.parentSeed.scope
+
     this._compileNode(this.el, true)
     this._extension(controllerName)
   }

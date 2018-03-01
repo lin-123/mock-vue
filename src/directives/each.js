@@ -14,7 +14,7 @@ module.exports = {
 
   unbind() {
     if(this.collection) {
-      this.collection.forEach(({seed}) => seed.destory())
+      this.collection.forEach(({$seed}) => $seed.destory())
       this.collection = null
     }
   },
@@ -38,17 +38,17 @@ module.exports = {
         parentSeed: this.seed,
         container: this.container,
         each: true,
+        index: idx
       }
     })
-    this.collection[idx].seed = seed
-    this.collection[idx].$index = idx
+    this.collection[idx] = seed.scope
     // const beforeNode = idx ==0 ? this.marker:this.collection[idx-1].seed.el
     this.container.insertBefore(seed.el, beforeNode)
   },
 
   recorder() {
-    this.collection.forEach((data, i) => {
-      data.$index = i
+    this.collection.forEach((scope, i) => {
+      scope.$index = i
     })
   }
 }
