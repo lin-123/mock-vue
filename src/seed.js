@@ -7,7 +7,6 @@ class Seed {
   constructor({el, data = {}, options}) {
     if(typeof el == 'string') el = document.querySelector(el)
     this.el = el
-
     const controllerName = this.el.getAttribute(CONTROLLER)
     this.el.removeAttribute(CONTROLLER)
 
@@ -15,9 +14,9 @@ class Seed {
     this._bindings = {}
     // external interface
     this.scope = data
+
     this._options = options || {}
     this._compileNode(this.el, true)
-
     this._extension(controllerName)
   }
 
@@ -64,7 +63,8 @@ class Seed {
         directive.unbind()
       })
 
-      delete this._bindings[bindKey]
+      // cannot delete this, beacuse this scope varaible bind
+      // delete this._bindings[bindKey]
     }
 
     if(this._options.parentSeed) delete this._options.parentSeed[constance.child + this.el.id]
@@ -90,7 +90,7 @@ class Seed {
     scopeOwner._bindings[variable].directives.push(directive)
     if(directive.bind) directive.bind.call(directive);
 
-    const binding = this._bindings[variable]
+    const binding = scopeOwner._bindings[variable]
     if(binding && binding.value) {
       directive.update(binding.value)
     }

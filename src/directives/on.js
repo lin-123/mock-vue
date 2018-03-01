@@ -4,7 +4,6 @@ module.exports = {
   bind() {
     const opt = this.seed._options
     if(opt.each) {
-      // debugger
       const attribute = this.directiveName + '*="' + this.expression
       this.selector = `[${attribute}]`
       this.delegator = opt.container
@@ -15,7 +14,8 @@ module.exports = {
     if(!handler) return;
     const { arg: event, el, seed, delegator, selector } = this
 
-    if(delegator && !delegator[selector]) {
+    // todo e.target cannot fund
+    if(delegator && !delegator[selector] && false) {
       delegator[selector] = (e) => {
       // this.handler = (e) => {
         // check target is current el
@@ -24,7 +24,6 @@ module.exports = {
         handler({ el: target, event: e, seed, })
       }
       el.addEventListener(event, this.delegator[selector])
-      // el.addEventListener(event, this.handler)
       return;
     }
 

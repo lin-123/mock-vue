@@ -13,7 +13,10 @@ module.exports = {
     this.container.removeChild(this.el)
     this.childSeeds = []
   },
+
   unbind() {
+    console.log('each unbind', this.el);
+
     this.childSeeds.forEach(seed => seed.destroy())
   },
 
@@ -38,7 +41,10 @@ function watchArray (collection) {
   mutatorMethods.forEach(method => {
     collection[method] = (...args) => {
       Array.prototype[method].call(collection, ...args)
-      // should call scope.todos = xxx so the dom will reload
+
+      this.update(collection)
+
+      // // should call scope.todos = xxx so the dom will reload
       console.log({
         method,
         args,

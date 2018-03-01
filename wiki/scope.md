@@ -2,6 +2,25 @@
 
 ## my mistake
 - [x] set seed data by set object reference other than copy by object property
+- [x] fix seed.destroy
+``` javascript
+destroy() {
+  // 这里有问题， 把scope也删掉了
+  // clean scene: call directives unbind
+  for( let bindKey in this._bindings) {
+    this._bindings[bindKey].directives.forEach(directive => {
+      if(!directive.unbind) return;
+      directive.unbind()
+    })
+    // cannot delete this, beacuse this scope varaible bind
+    // delete this._bindings[bindKey]
+  }
+
+  if(this._options.parentSeed) delete this._options.parentSeed[constance.child + this.el.id]
+  // rm dom
+  this.el.parentNode.removeChild(this.el)
+}
+```
 
 ## [88513c07] array watcher
 
