@@ -3,6 +3,8 @@
 ## my mistake
 - set seed data by set object reference other than copy by object property
 
+## [88513c07] array watcher
+
 ## [ca62c95a] break directives into individual files
 - [x] break directives into individual files
 
