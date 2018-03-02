@@ -91,20 +91,6 @@ class Seed {
     directive.el = el
     directive.seed = this
 
-    let scopeOwner = this._getScopeOwner(directive)
-    let {key} = directive
-
-    if(!scopeOwner._bindings[key]) scopeOwner._createBinding(key);
-    scopeOwner._bindings[key].directives.push(directive)
-    const binding = scopeOwner._bindings[key]
-    const bindingValue = binding && binding.value
-
-    if(directive.bind) directive.bind.call(directive, bindingValue);
-
-    if(bindingValue) directive.update(bindingValue)
-  }
-
-  _getScopeOwner(directive) {
     let scopeOwner = this
     const epr = this._options.eachPrefixRE
     let {key} = directive
@@ -112,17 +98,48 @@ class Seed {
     if(epr && !epr.test(key) ) scopeOwner = scopeOwner._options.parentSeed
     if(epr && epr.test(key)) key = key.replace(epr, '')
 
-    while(regexps.ansesstor.test(key) && scopeOwner._options.parentSeed) {
-      scopeOwner = scopeOwner._options.parentSeed
-      key = key.replace(regexps.ansesstor, '')
+    // for nest controller
+    scopeOwner = this._getScopeOwner(directive, scopeOwner)
+    if(!scopeOwner._bindings[key]) scopeOwner._createBinding(key);
+    scopeOwner._bindings[key].directives.push(directive)
+    const binding = scopeOwner._bindings[key]
+    directive.binding = binding
+    const bindingValue = binding && binding.value
+
+    if(directive.bind) directive.bind.call(directive, bindingValue);
+    if(bindingValue) directive.update(bindingValue)
+
+    scopeOwner._bindDependency(directive)
+  }
+
+  _bindDependency(directive) {
+    const {dep} = directive
+    if(!dep) return;
+
+    let depScop = this._getScopeOwner(dep, this)
+    const depBind = depScop._bindings[dep.key] || depScop._createBinding(dep.key)
+    if(!depBind.dependencies) {
+      depBind.dependencies = []
+      depBind.refreshDependents = () => {
+        depBind.dependencies.forEach(d => d.refresh())
+      }
+    }
+    depBind.dependencies.push(directive)
+  }
+
+  _getScopeOwner(key, scopeOwner) {
+    if(key.nesting) {
+      for(let i = 0; i<key.nesting; i++) {
+        scopeOwner = scopeOwner._options.parentSeed
+      }
     }
 
-    if(regexps.root.test(key)) {
-      while(scopeOwner._options.parentSeed) { scopeOwner = scopeOwner._options.parentSeed}
-      key = key.replace(regexps.root, '')
+    if(key.root) {
+      while(scopeOwner._options.parentSeed) {
+        scopeOwner = scopeOwner._options.parentSeed
+      }
     }
 
-    directive.key = key
     return scopeOwner
   }
 

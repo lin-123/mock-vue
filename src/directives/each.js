@@ -22,7 +22,14 @@ module.exports = {
   update(collection) {
     this.unbind()
     this.collection = collection
-    watchArray.call(this)
+    const self = this
+    watchArray.call(this, () => {
+      // debugger
+      console.log(self)
+
+      if(self.binding.refreshDependents)
+        self.binding.refreshDependents()
+    })
 
     // create new nodes
     collection.forEach((data, i) => this.buildHtml(data, i));

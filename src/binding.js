@@ -7,10 +7,12 @@ class Binding {
     this.directiveName = name.substr(prefix.length + 1)
     // for seed
     this._buildUpdate(this.directiveName)
-
     // for directive 'on'
     this.expression = value
-    this._parseKey(value)
+    const keyInfo = this._parseKey(value)
+    for(let prop in keyInfo) {
+      this[prop] = keyInfo[prop]
+    }
     this._parseFilters(value)
   }
 
@@ -20,17 +22,22 @@ class Binding {
 
   _parseKey(value) {
     const argMatch = value.match(/(^\w+):(.+)/)
-    let noArg
+    let noArg, res = {}
     if(argMatch){
-      this.arg = argMatch[1]
+      res.arg = argMatch[1]
       noArg = argMatch[2]
     } else {
       noArg = value
     }
-
-    this.key = this._getVal(noArg, regexps.KEY_RE)
-    const dep = this._getVal(noArg, regexps.DEP_RE)
-    this.dep = dep && dep.slice(1).trim()
+    res.nesting = this._getVal(noArg, regexps.ansesstor)
+    res.root = this._getVal(noArg, regexps.root)
+    let noNesting = noArg.replace(res.nesting, '').replace(res.root, '')
+    res.key = this._getVal(noNesting, regexps.KEY_RE)
+    const dep = this._getVal(noNesting, regexps.DEP_RE)
+    if(dep) {
+      res.dep = this._parseKey(dep.slice(1).trim())
+    }
+    return res
   }
 
   _parseFilters(value) {
@@ -63,7 +70,12 @@ class Binding {
     }
   }
 
+  refresh() {
+    this.update(this.value)
+  }
+
   update(newVal) {
+    this.value = newVal
     if(typeof newVal === 'function' && !this.fn) {
       newVal = newVal()
     }

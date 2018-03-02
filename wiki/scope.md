@@ -7,6 +7,7 @@
 - 通过注册依赖directive来实现指定的更新。 对于each的array有watch array方法可以监控。
 
 - 对于each里面的CheckBox怎么监控它的变化的。 [这个是下一阶段问题]
+- 对象引用太乱， 理不出头绪。
 
 
 ## [88513c07] array watcher

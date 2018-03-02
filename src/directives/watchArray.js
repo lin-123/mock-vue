@@ -45,12 +45,12 @@ const Watcher = {
 }
 Watcher.reverse = Watcher.sort
 
-function watchArray () {
+function watchArray (cb) {
   mutatorMethods.forEach(method => {
     this.collection[method] = (...args) => {
       const result = Array.prototype[method].call(this.collection, ...args)
       Watcher[method].call(this, args, result)
-      return result
+      cb({result})
     }
   })
 }

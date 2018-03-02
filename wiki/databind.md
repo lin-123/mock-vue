@@ -2,6 +2,10 @@
 
   > 数据绑定模块。最通俗的就是大家都知道的`Object.defineProperty`。但是这个只是vue最最基础的数据绑定。它实现了最原始的从data到view的数据映射。但是还有许多其他问题。比如对于vue里的v-for， angular里的ng-repeat是怎么渲染的。组件之前的嵌套怎么实现， 子组件修改了父组件的数据怎么反馈到父组件并且重新触发父组件使用了这个数据的标签重新渲染。 这个都是在看源码之前所没有想过的。
 
+## 杂记
+
+- 将deps对应的directive绑定到deps上的变量data上。 这样当data改变的时候，就可以直接调用directive的update事件
+
 ## data flow
 
 ### new instance

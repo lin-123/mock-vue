@@ -11,7 +11,7 @@ module.exports = {
   // compute scope
   regexps: {
     // 祖先节点： ^name
-    ansesstor: /^\^/,
+    ansesstor: /^\^+/,
     // 根节点： $name
     root: /^\$/,
     ARG_RE: /^[^:]/,
