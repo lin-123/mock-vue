@@ -96,7 +96,7 @@ class Seed {
     let {key} = directive
 
     if(epr && !epr.test(key) ) scopeOwner = scopeOwner._options.parentSeed
-    if(epr && epr.test(key)) key = key.replace(epr, '')
+    if(epr && epr.test(key)) directive.key = key = key.replace(epr, '')
 
     // for nest controller
     scopeOwner = this._getScopeOwner(directive, scopeOwner)
@@ -117,6 +117,7 @@ class Seed {
     if(!dep) return;
 
     let depScop = this._getScopeOwner(dep, this)
+    // debugger
     const depBind = depScop._bindings[dep.key] || depScop._createBinding(dep.key)
     if(!depBind.dependencies) {
       depBind.dependencies = []
@@ -158,6 +159,7 @@ class Seed {
         })
       }
     })
+    return this._bindings[key]
   }
 }
 

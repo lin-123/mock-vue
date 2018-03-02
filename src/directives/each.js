@@ -24,9 +24,6 @@ module.exports = {
     this.collection = collection
     const self = this
     watchArray.call(this, () => {
-      // debugger
-      console.log(self)
-
       if(self.binding.refreshDependents)
         self.binding.refreshDependents()
     })

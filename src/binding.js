@@ -80,6 +80,10 @@ class Binding {
       newVal = newVal()
     }
     this._update(this._filters ? this._applyFilters(newVal) : newVal)
+    const {refreshDependents} = this.binding
+    if(refreshDependents) {
+      refreshDependents()
+    }
   }
 }
 

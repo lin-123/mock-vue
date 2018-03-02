@@ -9,19 +9,18 @@ module.exports = {
       this.delegator = opt.container
     }
   },
+
   update: function (handler) {
     this.unbind()
     if(!handler) return;
-    const { arg: event, el, seed, delegator, selector } = this
+    const { arg: event, el, seed: {scope}, delegator, selector } = this
 
     // todo e.target cannot fund
     if(delegator && !delegator[selector] && false) {
       delegator[selector] = (e) => {
-      // this.handler = (e) => {
-        // check target is current el
         const target = delegateCheck(e.target, delegator, this.selector)
         if(!target) return;
-        handler({ el: target, event: e, seed, })
+        handler({ el: target, event: e, scope })
       }
       el.addEventListener(event, this.delegator[selector])
       return;
@@ -31,7 +30,7 @@ module.exports = {
       return handler({
         el,
         event: e,
-        seed,
+        scope,
       })
     }
     el.addEventListener(event, this.handler)

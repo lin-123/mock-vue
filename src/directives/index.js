@@ -25,7 +25,7 @@ module.exports = {
   checked: {
     bind() {
       this.handler = () => {
-        this.seed.scope[this.variable] = this.el.checked
+        this.seed.scope[this.key] = this.el.checked
       }
       this.el.addEventListener('change', this.handler)
     },
