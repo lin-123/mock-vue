@@ -30,6 +30,8 @@
     </head>
     <body>
         <div id="app" sd-controller="Todos" sd-class="filter">
+            <p sd-show="todos" sd-text="filter | uppercase 1 2 3"></p>
+
             <div>
                 <input placeholder="What needs to be done?" sd-on="change:addTodo">
             </div>

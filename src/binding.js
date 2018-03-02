@@ -1,37 +1,48 @@
 const Filters = require('./filters')
 const Directives = require('./directives')
-const {prefix, CONTROLLER} = require('./config')
+const {prefix, CONTROLLER, regexps} = require('./config')
 
 class Binding {
   constructor(name, value) {
-    const key = name.substr(prefix.length + 1)
-    debugger
-
-    let [, arg, noArg] = value.match(/(^\w+):(.+)/) || []
-    noArg = noArg?noArg:value
-    const [variable, ...filters] = noArg.split('|').map(i => i.trim())
-
-    // if(arg === 'change') debugger
-    // for directives on method
-    this.arg  = arg
-    this.directiveName = name
-    this.expression = value
+    this.directiveName = name.substr(prefix.length + 1)
     // for seed
-    this.variable  = variable
-    this._parseFilters(filters)
-    this._buildUpdate(key)
+    this._buildUpdate(this.directiveName)
+
+    // for directive 'on'
+    this.expression = value
+    this._parseKey(value)
+    this._parseFilters(value)
   }
 
-  _parseFilters(filters) {
-    if(filters.length) {
-      this._filters = []
-      filters.forEach(filter => {
-        const [name, ...args] = filter.split(/\s+/)
-        const apply = Filters[name]
-        if(!apply) throw new Error('invalid filter ' + name + args)
-        this._filters.push({apply, args})
-      })
+  _getVal(str, reg) {
+    return str.match(reg) && str.match(reg)[0].trim()
+  }
+
+  _parseKey(value) {
+    const argMatch = value.match(/(^\w+):(.+)/)
+    let noArg
+    if(argMatch){
+      this.arg = argMatch[1]
+      noArg = argMatch[2]
+    } else {
+      noArg = value
     }
+
+    this.key = this._getVal(noArg, regexps.KEY_RE)
+    const dep = this._getVal(noArg, regexps.DEP_RE)
+    this.dep = dep && dep.slice(1).trim()
+  }
+
+  _parseFilters(value) {
+    const filters = this._getVal(value, regexps.FILTER_RE)
+    if(!filters) return;
+    this._filters = []
+    filters.slice(1).split('|').forEach(filter => {
+      const [name, ...args] = filter.trim().split(/\s+/)
+      const apply = Filters[name]
+      if(!apply) throw new Error('invalid filter ' + name + args)
+      this._filters.push({apply, args})
+    })
   }
 
   _applyFilters(value) {

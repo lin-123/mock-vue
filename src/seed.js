@@ -92,11 +92,11 @@ class Seed {
     directive.seed = this
 
     let scopeOwner = this._getScopeOwner(directive)
-    let {variable} = directive
+    let {key} = directive
 
-    if(!scopeOwner._bindings[variable]) scopeOwner._createBinding(variable);
-    scopeOwner._bindings[variable].directives.push(directive)
-    const binding = scopeOwner._bindings[variable]
+    if(!scopeOwner._bindings[key]) scopeOwner._createBinding(key);
+    scopeOwner._bindings[key].directives.push(directive)
+    const binding = scopeOwner._bindings[key]
     const bindingValue = binding && binding.value
 
     if(directive.bind) directive.bind.call(directive, bindingValue);
@@ -107,36 +107,36 @@ class Seed {
   _getScopeOwner(directive) {
     let scopeOwner = this
     const epr = this._options.eachPrefixRE
-    let {variable} = directive
+    let {key} = directive
 
-    if(epr && !epr.test(variable) ) scopeOwner = scopeOwner._options.parentSeed
-    if(epr && epr.test(variable)) variable = variable.replace(epr, '')
+    if(epr && !epr.test(key) ) scopeOwner = scopeOwner._options.parentSeed
+    if(epr && epr.test(key)) key = key.replace(epr, '')
 
-    while(regexps.ansesstor.test(variable) && scopeOwner._options.parentSeed) {
+    while(regexps.ansesstor.test(key) && scopeOwner._options.parentSeed) {
       scopeOwner = scopeOwner._options.parentSeed
-      variable = variable.replace(regexps.ansesstor, '')
+      key = key.replace(regexps.ansesstor, '')
     }
 
-    if(regexps.root.test(variable)) {
+    if(regexps.root.test(key)) {
       while(scopeOwner._options.parentSeed) { scopeOwner = scopeOwner._options.parentSeed}
-      variable = variable.replace(regexps.root, '')
+      key = key.replace(regexps.root, '')
     }
 
-    directive.variable = variable
+    directive.key = key
     return scopeOwner
   }
 
-  _createBinding(variable) {
-    this._bindings[variable] = {
+  _createBinding(key) {
+    this._bindings[key] = {
       directives: [],
-      value: this.scope[variable]
+      value: this.scope[key]
     }
 
-    Object.defineProperty(this.scope, variable, {
-      get: () => this._bindings[variable].value,
+    Object.defineProperty(this.scope, key, {
+      get: () => this._bindings[key].value,
       set: (newVal) => {
-        this._bindings[variable].value = newVal
-        this._bindings[variable].directives.forEach( (directive)=> {
+        this._bindings[key].value = newVal
+        this._bindings[key].directives.forEach( (directive)=> {
           directive.update(newVal)
         })
       }

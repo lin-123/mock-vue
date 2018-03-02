@@ -13,7 +13,11 @@ module.exports = {
     // 祖先节点： ^name
     ansesstor: /^\^/,
     // 根节点： $name
-    root: /^\$/
+    root: /^\$/,
+    ARG_RE: /^[^:]/,
+    KEY_RE: /^[^\|<]+/,
+    FILTER_RE: /\|[^<]+/,
+    DEP_RE: /<.*/,
   },
   mutatorMethods: [
     'pop',
