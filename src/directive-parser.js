@@ -29,6 +29,10 @@ class DirectiveParser {
     } else {
       noArg = value
     }
+
+    res.inverse = regexps.INVERSE_RE.test(noArg)
+    if(res.inverse) noArg = noArg.slice(1);
+
     res.nesting = this._getVal(noArg, regexps.ansesstor)
     res.root = this._getVal(noArg, regexps.root)
     let noNesting = noArg.replace(res.nesting, '').replace(res.root, '')
@@ -75,10 +79,14 @@ class DirectiveParser {
   }
 
   update(newVal) {
+    if(this.value === newVal) return;
+
     this.value = newVal
     if(typeof newVal === 'function' && !this.fn) {
       newVal = newVal()
     }
+    if(this.inverse) newVal = !newVal;
+
     this._update(this._filters ? this._applyFilters(newVal) : newVal)
     const {refreshDependents} = this.binding
     if(refreshDependents) {

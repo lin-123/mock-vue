@@ -1,5 +1,14 @@
 # scope handler
 
+todo
+## [52272487] event delegation in sd-each
+> [javascript: 事件委托解析](http://www.imooc.com/article/16468)
+- [ ] delegate event to current seed's parentNode which in sd-each
+  * [x] no seed.each parameter
+  * [ ] cannot check delegate
+
+## [f6d6bba70d871] inverse value
+
 ## [9a4e5d035] use emitter
 
 - [x] use descriptor for computed properties

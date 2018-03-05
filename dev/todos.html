@@ -31,7 +31,7 @@
     <body>
         <div id="app" sd-controller="Todos" sd-class="filter">
             <div>
-                <input placeholder="What needs to be done?" sd-on="change:addTodo">
+                <input placeholder="What needs to be done?" sd-on="change:addTodo" sd-value="!todos">
             </div>
             <ul sd-show="todos">
                 <li class="todo" sd-each="todo:todos" sd-class="done:todo.done">

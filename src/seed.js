@@ -171,6 +171,7 @@ class Seed {
         return this._bindings[key].value
       },
       set: (newVal) => {
+        if(newVal === this._bindings[key].value) return;
         this.emit('set', key, newVal)
         this._updateBinding(key, newVal)
       }

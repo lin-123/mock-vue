@@ -18,6 +18,7 @@ module.exports = {
     KEY_RE: /^[^\|<]+/,
     FILTER_RE: /\|[^<]+/,
     DEP_RE: /<.*/,
+    INVERSE_RE: /^!/,
   },
   mutatorMethods: [
     'pop',
