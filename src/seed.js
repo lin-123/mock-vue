@@ -1,5 +1,5 @@
 const Emitter = require('emitter')
-const Binding = require('./binding')
+const DirectiveParser = require('./directive-parser')
 const Controllers = require('./controllers')
 const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER, constance} = require('./config')
 const {typeofObj, watchArray, get} = require('./utils')
@@ -43,7 +43,7 @@ class Seed {
     // if has controller attribute : should build by relation scope
     if(el.attributes && el.attributes.length){
       const build = (name, value) => {
-        const directive =new Binding(name, value.trim())
+        const directive =new DirectiveParser(name, value.trim())
         if(!directive) return;
         this._bind(el, directive)
         el.removeAttribute(name)

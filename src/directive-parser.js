@@ -2,7 +2,7 @@ const Filters = require('./filters')
 const Directives = require('./directives')
 const {prefix, CONTROLLER, regexps} = require('./config')
 
-class Binding {
+class DirectiveParser {
   constructor(name, value) {
     this.directiveName = name.substr(prefix.length + 1)
     // for seed
@@ -87,4 +87,4 @@ class Binding {
   }
 }
 
-module.exports = Binding
+module.exports = DirectiveParser
