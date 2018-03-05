@@ -14,7 +14,7 @@ module.exports = {
 
   unbind() {
     if(this.collection) {
-      this.collection.forEach(({$seed}) => $seed.destory())
+      this.collection.forEach(({$destroy}) => $destroy())
       this.collection = null
     }
   },

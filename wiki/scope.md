@@ -3,6 +3,7 @@
 ## [7d126127e] complete todo example
 
 - [x] fix watchArray
+- [x] add some filters
 
 
 ## [5acc8a29] computed properties

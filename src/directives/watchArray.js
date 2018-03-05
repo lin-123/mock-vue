@@ -62,6 +62,7 @@ function watchArray (cb) {
       Watcher[method].call(this, args, result)
       this.recorder()
       cb({result})
+      return result
     }
   })
 
