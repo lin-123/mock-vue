@@ -15,10 +15,15 @@ class Seed {
     this._bindings = {}
 
     // external interface
-    const scope = this.scope = data
+    let scope = this.scope = data
+
+    if(scope.$seed) {
+      scope = this.scope = scope.$dump()
+    }
+
     scope.$seed     = this
     scope.$destroy  = this.destroy.bind(this)
-    // scope.$dump     = this._dump.bind(this)
+    scope.$dump     = this._dump.bind(this)
     scope.$on       = this.on.bind(this)
     scope.$emit     = this.emit.bind(this)
     scope.$index    = options.index
@@ -60,6 +65,11 @@ class Seed {
       })
     }
     el.childNodes.forEach(this._compileNode.bind(this))
+
+  }
+
+  // for binding call unbind
+  _unbind() {
 
   }
 
@@ -160,6 +170,23 @@ class Seed {
       }
     })
     return this._bindings[key]
+  }
+
+  _dump() {
+    const dump = {}
+    const subDump = (scope) => scope.$dump()
+    for (var key in this.scope) {
+      if(key.charAt(0) == '$') continue;
+
+      const val = this._bindings[key]
+      if (!val) continue
+      if (Array.isArray(val)) {
+          dump[key] = val.map(subDump)
+      } else {
+          dump[key] = this._bindings[key].value
+      }
+    }
+    return dump
   }
 }
 

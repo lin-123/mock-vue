@@ -1,3 +1,13 @@
+const keyCodes = {
+    enter: 13,
+    tab: 9,
+    delete: 46,
+    up: 38,
+    left: 37,
+    right: 39,
+    down: 40
+}
+
 module.exports = {
     capitalize: function (value) {
         value = value.toString()
@@ -7,5 +17,13 @@ module.exports = {
     uppercase: function (value) {
         return value.toUpperCase()
     },
+
+    key(handler, codeName) {
+        const code = keyCodes[codeName] || codeName
+        return (e) => {
+            if(e.event.keyCode !== code) return;
+            handler(e)
+        }
+    }
 
 }

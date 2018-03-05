@@ -1,5 +1,13 @@
 # scope handler
 
+## [7d126127e] complete todo example
+
+- [x] fix watchArray
+- [x] add some filters
+- [x] vue会改变原始传入的数据。所以重新初始画的时候需要检测当前数据是否是初始化之后的数据，如果是则无需重新创建， 只要复制就好。 否则，需要初始化此类数据。 这个就是seed.dump的作用.
+  * dump 转存。 将当前的this转存到dump里
+
+
 ## [5acc8a29] computed properties
 
 - each should notify user when call array method such as push, pop, shift etc.
@@ -8,6 +16,7 @@
 
 - 对于each里面的CheckBox怎么监控它的变化的。 [这个是下一阶段问题]
 - 对象引用太乱， 理不出头绪。
+  - this引用，对象引用 等等，理不出来
 
 
 ## [88513c07] array watcher
