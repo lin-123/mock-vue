@@ -1,7 +1,7 @@
 const {
   BLOCK,
 } = require('../config')
-const watchArray = require('./watchArray')
+const mutations = require('./mutations')
 
 module.exports = {
   bind() {
@@ -22,12 +22,9 @@ module.exports = {
   update(collection) {
     this.unbind()
     this.collection = collection
-    const self = this
-    watchArray.call(this, () => {
-      if(self.binding.refreshDependents)
-        self.binding.refreshDependents()
+    collection.on('mutation', ({method, args, result}) => {
+      mutations[method].call(this, args, result)
     })
-
     // create new nodes
     collection.forEach((data, i) => this.buildHtml(data, i));
   },
@@ -50,7 +47,7 @@ module.exports = {
     this.container.insertBefore(seed.el, beforeNode)
   },
 
-  recorder() {
+  refreshIdx() {
     this.collection.forEach((scope, i) => {
       scope.$index = i
     })

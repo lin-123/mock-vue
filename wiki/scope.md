@@ -1,5 +1,10 @@
 # scope handler
 
+## [9a4e5d035] use emitter
+
+- [x] use descriptor for computed properties
+- [ ] getter setter should emit events
+
 ## [7d126127e] complete todo example
 
 - [x] fix watchArray

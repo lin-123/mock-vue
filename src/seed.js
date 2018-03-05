@@ -2,6 +2,7 @@ const Emitter = require('emitter')
 const Binding = require('./binding')
 const Controllers = require('./controllers')
 const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER, constance} = require('./config')
+const {typeofObj, watchArray, get} = require('./utils')
 
 class Seed {
   constructor({el, data = {}, options = {}}) {
@@ -20,6 +21,9 @@ class Seed {
     if(scope.$seed) {
       scope = this.scope = scope.$dump()
     }
+    // for listening scope data get set
+    // this.on('set', (...args) => console.log(args, 'on set '));
+    // this.on('get', (...args) => console.log(args, 'on get '));
 
     scope.$seed     = this
     scope.$destroy  = this.destroy.bind(this)
@@ -111,6 +115,7 @@ class Seed {
     // for nest controller
     scopeOwner = this._getScopeOwner(directive, scopeOwner)
     if(!scopeOwner._bindings[key]) scopeOwner._createBinding(key);
+
     scopeOwner._bindings[key].directives.push(directive)
     const binding = scopeOwner._bindings[key]
     directive.binding = binding
@@ -161,15 +166,34 @@ class Seed {
     }
 
     Object.defineProperty(this.scope, key, {
-      get: () => this._bindings[key].value,
+      get: () => {
+        this.emit('get', key)
+        return this._bindings[key].value
+      },
       set: (newVal) => {
-        this._bindings[key].value = newVal
-        this._bindings[key].directives.forEach( (directive)=> {
-          directive.update(newVal)
-        })
+        this.emit('set', key, newVal)
+        this._updateBinding(key, newVal)
       }
     })
     return this._bindings[key]
+  }
+
+  _updateBinding(key, newVal) {
+    // watch array
+    const type = typeofObj(newVal)
+    const seed = this
+    if(type === 'Array') {
+      watchArray(newVal)
+      newVal.on('mutation', () => {
+        const refDep = seed._bindings[key].refreshDependents()
+        refDep && refDep()
+      })
+    }
+
+    this._bindings[key].value = newVal
+    this._bindings[key].directives.forEach( (directive)=> {
+      directive.update(newVal)
+    })
   }
 
   _dump() {
