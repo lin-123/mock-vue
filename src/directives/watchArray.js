@@ -1,4 +1,5 @@
 const {mutatorMethods} = require('../config')
+const {get} = require('../utils')
 
 const Watcher = {
   pop(args, result) {
@@ -15,16 +16,17 @@ const Watcher = {
   },
 
   unshift(args, result) {
-    const beforeNode = this.collection[1].$seed.el
-    this.buildHtml(args[0], 0, beforeNode)
-    this.recorder()
+    const beforeNode = get(this.collection[1], '$seed.el')
+    args.forEach(data => {
+      this.buildHtml(data, 0, beforeNode)
+    })
   },
 
   // 添加或者删除一些元素
   splice(args, result) {
     const news = args.slice(2)
     // let [start, num, ...news] = args
-    result.forEach(({seed}) => seed.destroy() )
+    result.forEach(({$destroy}) => $destroy() )
     const newsLen = news.length
     if(!newsLen) return;
     const start = this.collection.findIndex(i=> !i.$seed)
@@ -33,25 +35,38 @@ const Watcher = {
     news.forEach((data, i) => {
       this.buildHtml(data, start - i, beforeNode)
     })
-    this.recorder()
   },
 
   sort() {
     this.collection.forEach((data, idx) => {
       this.container.insertBefore(data.$seed.el, this.marker)
-      data.$index = idx
     })
   },
 }
 Watcher.reverse = Watcher.sort
+
+const argumentations = {
+  remove(seed) {
+    // seed.$destroy()
+    this.collection.splice(seed.$index, 1)
+  },
+  replace() {
+
+  }
+}
 
 function watchArray (cb) {
   mutatorMethods.forEach(method => {
     this.collection[method] = (...args) => {
       const result = Array.prototype[method].call(this.collection, ...args)
       Watcher[method].call(this, args, result)
+      this.recorder()
       cb({result})
     }
+  })
+
+  Object.keys(argumentations).forEach(method => {
+    this.collection[method] = argumentations[method].bind(this)
   })
 }
 

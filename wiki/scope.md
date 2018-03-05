@@ -1,5 +1,10 @@
 # scope handler
 
+## [7d126127e] complete todo example
+
+- [x] fix watchArray
+
+
 ## [5acc8a29] computed properties
 
 - each should notify user when call array method such as push, pop, shift etc.
