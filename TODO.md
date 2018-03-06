@@ -1,11 +1,26 @@
-# scope handler
+# TODO
 
-todo
+
+## [5f5aa8fb4] v0.1.0
+
 ## [52272487] event delegation in sd-each
 > [javascript: 事件委托解析](http://www.imooc.com/article/16468)
 - [ ] delegate event to current seed's parentNode which in sd-each
   * [x] no seed.each parameter
   * [ ] cannot check delegate
+
+  * 01fae38fe fix delegation, and invoke updates during binding
+  * c0a65ddda clean up, trying to fix delegation after array reset
+  * faf055791 no longer need $refresh
+  * dada181c8 fix _dump()
+
+## [7a0172d60] auto parse dependency for computed properties!!!!!
+  - computed properties 就是每次scope里面的数据变了都要重新算一次这些properties
+  - 在scope[key].set中调用这些properties就好了
+  -
+
+
+# DONE
 
 ## [f6d6bba70d871] inverse value
 

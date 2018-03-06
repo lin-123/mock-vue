@@ -1,8 +1,12 @@
 const Emitter = require('emitter')
 const DirectiveParser = require('./directive-parser')
+const TextnodeParser = require('./textnode-parser')
 const Controllers = require('./controllers')
 const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER, constance} = require('./config')
 const {typeofObj, watchArray, get} = require('./utils')
+const Binding = require('./core/binding')
+const Observer = require('./core/observer')
+
 
 class Seed {
   constructor({el, data = {}, options = {}}) {
@@ -21,9 +25,6 @@ class Seed {
     if(scope.$seed) {
       scope = this.scope = scope.$dump()
     }
-    // for listening scope data get set
-    // this.on('set', (...args) => console.log(args, 'on set '));
-    // this.on('get', (...args) => console.log(args, 'on get '));
 
     scope.$seed     = this
     scope.$destroy  = this.destroy.bind(this)
@@ -35,10 +36,13 @@ class Seed {
 
     this._compileNode(this.el, true)
     this._extension(controllerName)
+
+    // 收集依赖
+    Observer.collect()
   }
 
   _compileNode(el, root) {
-    if(el.nodeType === 3) return;
+    if(el.nodeType === 3) return TextnodeParser(el);
 
     // if has controller attribute : should build by relation scope
     if(el.attributes && el.attributes.length){
@@ -72,6 +76,102 @@ class Seed {
 
   }
 
+  _bind(el, directive) {
+    directive.el = el
+    directive.seed = this
+
+    let scopeOwner = this
+    const epr = this._options.eachPrefixRE
+    let {key} = directive
+
+    if(epr && !epr.test(key) ) scopeOwner = scopeOwner._options.parentSeed
+    if(epr && epr.test(key)) directive.key = key = key.replace(epr, '')
+
+    // for nest controller
+    scopeOwner = this._getScopeOwner(directive, scopeOwner)
+    if(!scopeOwner._bindings[key]) scopeOwner._createBinding(key);
+
+    scopeOwner._bindings[key].directives.push(directive)
+    const binding = scopeOwner._bindings[key]
+    directive.binding = binding
+    const bindingValue = binding && binding.value
+
+    if(directive.bind) directive.bind.call(directive, bindingValue);
+    if(bindingValue) directive.update(bindingValue)
+  }
+
+
+  _getScopeOwner(key, scopeOwner) {
+    if(key.nesting) {
+      for(let i = 0; i<key.nesting; i++) {
+        scopeOwner = scopeOwner._options.parentSeed
+      }
+    }
+
+    if(key.root) {
+      while(scopeOwner._options.parentSeed) {
+        scopeOwner = scopeOwner._options.parentSeed
+      }
+    }
+    return scopeOwner
+  }
+
+  _createBinding(key) {
+    const binding = this._bindings[key] = new Binding(this.scope[key])
+
+    Object.defineProperty(this.scope, key, {
+      get: () => {
+        this.emit('get', key)
+        if(Observer.paresing) {
+          Observer.emit('get', binding, key)
+        }
+        return binding.isComputed ? binding.value() : binding.value
+      },
+      set: (newVal) => {
+        if(newVal === binding.value) return;
+        this.emit('set', key, newVal)
+        this._updateBinding(key, newVal, binding)
+      }
+    })
+    return binding
+  }
+
+  _updateBinding(key, newVal, binding) {
+    binding.parseValue(newVal)
+
+    if(binding.isComputed) {
+      Observer.computeds.push(binding);
+    }
+
+    const seed = this
+    if(binding.type === 'Array') {
+      watchArray(newVal)
+      newVal.on('mutation', () => {
+        seed._bindings[key].emitChange()
+      })
+    }
+
+    binding.refresh()
+    binding.emitChange()
+  }
+
+  _dump() {
+    const dump = {}
+    const subDump = (scope) => scope.$dump()
+    for (var key in this.scope) {
+      if(key.charAt(0) == '$') continue;
+
+      const val = this._bindings[key]
+      if (!val) continue
+      if (Array.isArray(val)) {
+          dump[key] = val.map(subDump)
+      } else {
+          dump[key] = this._bindings[key].value
+      }
+    }
+    return dump
+  }
+
   // for binding call unbind
   _unbind() {
 
@@ -99,119 +199,6 @@ class Seed {
 
     if(!controller) return;
     controller.call(null, this.scope, this)
-  }
-
-  _bind(el, directive) {
-    directive.el = el
-    directive.seed = this
-
-    let scopeOwner = this
-    const epr = this._options.eachPrefixRE
-    let {key} = directive
-
-    if(epr && !epr.test(key) ) scopeOwner = scopeOwner._options.parentSeed
-    if(epr && epr.test(key)) directive.key = key = key.replace(epr, '')
-
-    // for nest controller
-    scopeOwner = this._getScopeOwner(directive, scopeOwner)
-    if(!scopeOwner._bindings[key]) scopeOwner._createBinding(key);
-
-    scopeOwner._bindings[key].directives.push(directive)
-    const binding = scopeOwner._bindings[key]
-    directive.binding = binding
-    const bindingValue = binding && binding.value
-
-    if(directive.bind) directive.bind.call(directive, bindingValue);
-    if(bindingValue) directive.update(bindingValue)
-
-    scopeOwner._bindDependency(directive)
-  }
-
-  _bindDependency(directive) {
-    const {dep} = directive
-    if(!dep) return;
-
-    let depScop = this._getScopeOwner(dep, this)
-    // debugger
-    const depBind = depScop._bindings[dep.key] || depScop._createBinding(dep.key)
-    if(!depBind.dependencies) {
-      depBind.dependencies = []
-      depBind.refreshDependents = () => {
-        depBind.dependencies.forEach(d => d.refresh())
-      }
-    }
-    depBind.dependencies.push(directive)
-  }
-
-  _getScopeOwner(key, scopeOwner) {
-    if(key.nesting) {
-      for(let i = 0; i<key.nesting; i++) {
-        scopeOwner = scopeOwner._options.parentSeed
-      }
-    }
-
-    if(key.root) {
-      while(scopeOwner._options.parentSeed) {
-        scopeOwner = scopeOwner._options.parentSeed
-      }
-    }
-
-    return scopeOwner
-  }
-
-  _createBinding(key) {
-    this._bindings[key] = {
-      directives: [],
-      value: this.scope[key]
-    }
-
-    Object.defineProperty(this.scope, key, {
-      get: () => {
-        this.emit('get', key)
-        return this._bindings[key].value
-      },
-      set: (newVal) => {
-        if(newVal === this._bindings[key].value) return;
-        this.emit('set', key, newVal)
-        this._updateBinding(key, newVal)
-      }
-    })
-    return this._bindings[key]
-  }
-
-  _updateBinding(key, newVal) {
-    // watch array
-    const type = typeofObj(newVal)
-    const seed = this
-    if(type === 'Array') {
-      watchArray(newVal)
-      newVal.on('mutation', () => {
-        const refDep = seed._bindings[key].refreshDependents()
-        refDep && refDep()
-      })
-    }
-
-    this._bindings[key].value = newVal
-    this._bindings[key].directives.forEach( (directive)=> {
-      directive.update(newVal)
-    })
-  }
-
-  _dump() {
-    const dump = {}
-    const subDump = (scope) => scope.$dump()
-    for (var key in this.scope) {
-      if(key.charAt(0) == '$') continue;
-
-      const val = this._bindings[key]
-      if (!val) continue
-      if (Array.isArray(val)) {
-          dump[key] = val.map(subDump)
-      } else {
-          dump[key] = this._bindings[key].value
-      }
-    }
-    return dump
   }
 }
 
