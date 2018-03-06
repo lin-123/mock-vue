@@ -73,35 +73,6 @@ class Seed {
 
   }
 
-  // for binding call unbind
-  _unbind() {
-
-  }
-
-  destroy() {
-    // clean scene: call directives unbind
-    for( let bindKey in this._bindings) {
-      this._bindings[bindKey].directives.forEach(directive => {
-        if(!directive.unbind) return;
-        directive.unbind()
-      })
-
-      // cannot delete this, beacuse this scope varaible bind
-      // delete this._bindings[bindKey]
-    }
-
-    if(this._options.parentSeed) delete this._options.parentSeed[constance.child + this.el.id]
-    // rm dom
-    this.el.parentNode.removeChild(this.el)
-  }
-
-  _extension(controllerName) {
-    const controller = Controllers[controllerName]
-
-    if(!controller) return;
-    controller.call(null, this.scope, this)
-  }
-
   _bind(el, directive) {
     directive.el = el
     directive.seed = this
@@ -213,6 +184,35 @@ class Seed {
       }
     }
     return dump
+  }
+
+  // for binding call unbind
+  _unbind() {
+
+  }
+
+  destroy() {
+    // clean scene: call directives unbind
+    for( let bindKey in this._bindings) {
+      this._bindings[bindKey].directives.forEach(directive => {
+        if(!directive.unbind) return;
+        directive.unbind()
+      })
+
+      // cannot delete this, beacuse this scope varaible bind
+      // delete this._bindings[bindKey]
+    }
+
+    if(this._options.parentSeed) delete this._options.parentSeed[constance.child + this.el.id]
+    // rm dom
+    this.el.parentNode.removeChild(this.el)
+  }
+
+  _extension(controllerName) {
+    const controller = Controllers[controllerName]
+
+    if(!controller) return;
+    controller.call(null, this.scope, this)
   }
 }
 
