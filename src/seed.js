@@ -1,5 +1,6 @@
 const Emitter = require('emitter')
 const DirectiveParser = require('./directive-parser')
+const TextnodeParser = require('./textnode-parser')
 const Controllers = require('./controllers')
 const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER, constance} = require('./config')
 const {typeofObj, watchArray, get} = require('./utils')
@@ -38,7 +39,7 @@ class Seed {
   }
 
   _compileNode(el, root) {
-    if(el.nodeType === 3) return;
+    if(el.nodeType === 3) return TextnodeParser(el);
 
     // if has controller attribute : should build by relation scope
     if(el.attributes && el.attributes.length){
