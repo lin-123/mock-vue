@@ -4,14 +4,14 @@
 const {typeofObj} = require('../utils')
 
 class Binding {
-  constructor(value, key) {
+  constructor(value) {
     this.directives = []
     this.dependents = []
-    // will set value,type,isComputed
     this.parseValue(value)
-    this.key = key
+
   }
 
+  // will set value,type,isComputed
   parseValue(value) {
     if(value === this.value) return;
     this.value = value
@@ -24,15 +24,14 @@ class Binding {
   }
 
   refresh() {
-    const {value} = this
     this.directives.forEach( (directive)=> {
-      directive.update(value)
+      directive.update(this.value)
     })
   }
 
   emitChange() {
     this.dependents.forEach((directive) => {
-      directive.update(this.value)
+      directive.refresh()
     })
   }
 }

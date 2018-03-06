@@ -9,9 +9,6 @@ class Observer extends Emitter {
 
   parseDeps (binding) {
     this.on('get', (dep, key) => {
-      if (!dep.dependents) {
-        dep.dependents = []
-      }
       dep.dependents.push.apply(dep.dependents, binding.directives)
     })
     binding.value()

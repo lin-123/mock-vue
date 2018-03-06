@@ -70,7 +70,12 @@ class DirectiveParser {
     }
   }
 
+  refresh() {
+    this.update(this.value)
+  }
+
   update(newVal) {
+    this.value = newVal
     if(typeof newVal === 'function' && !this.fn) {
       newVal = newVal()
     }

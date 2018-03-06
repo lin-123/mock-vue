@@ -3,58 +3,69 @@
 > 计算属性
 
 ## 实现原理
-  - computed properties 就是每次scope里面的数据变了都要重新算一次这些properties
-  - 将computed中的scope变量添加到deps数组中
-    * 注册依赖
+    - 如： 设置total为计算属性
+    - 书写方式
 
         ```javascript
-        Seed.prototype._parseDeps = function (binding) {
-            depsObserver.on('get', function (dep) {
-                if (!dep.dependents) {
-                    dep.dependents = []
-                }
-                dep.dependents.push.apply(dep.dependents, binding.instances)
-            })
-            binding.value()
-            depsObserver.off('get')
+        // computed properties ----------------------------------------------------
+        scope.total = {get: function () {
+            return scope.todos.length
+        }}
+        ```
+    - 将total加入到seed._bindings中。 new Binding(total)
+
+        ```javascript
+        const binding = this._bindings[key] = new Binding(this.scope[key])
+        ```
+
+    - 在将total属性加入binding中的时候判断是计算属性。
+
+        ```javascript
+        // binding.js
+        parseValue(value) {
+            if(value === this.value) return;
+            this.value = value
+            const type = this.type = typeofObj(value)
+            this.isComputed = false
+            if(type === 'Object' && value.get) {
+            this.value = value.get
+            this.isComputed = true
+            }
         }
         ```
 
-  - 在scope[key].set中调用bindings[key].dependencies 这些properties就好了
+    - 将total这个binding放到observer.computed中。 等待compileNode 遍历dom节点执行完了之后在处理。
 
+    - 执行observer.collection()
 
-- 这种写法是为了能够将completed作为计算属性来用
+        ```javascript
+        // observer.js
+        parseDeps (binding) {
+            this.on('get', (dep, key) => {
+                dep.dependents.push.apply(dep.dependents, binding.directives)
+            })
+            // 关键是执行这一步。 会重新将其依赖的所有参数都收集到这个on事件里
+            binding.value()
+            this.off('get')
+        }
+        collect() {
+            this.paresing = true
+            this.computeds.forEach(binding => {
+                this.parseDeps(binding)
+            })
+            this.computeds = []
+            this.paresing = false
+        }
+        ```
 
-    <!-- app.js -->
-    ``` javascript
-      scope.completed = {get: function () {
-          return scope.total() - scope.remaining
-      }}
-    ```
+    - 最后，当todos更新时，会调用seed._bindings['todos'].emitChange() 方法
 
-    <!-- seed.js -->
-    ``` javascript
-    Seed.prototype._updateBinding = function (key, value) {
-
-      var binding = this._bindings[key],
-          type = binding.type = typeOf(value)
-
-      // preprocess the value depending on its type
-      if (type === 'Object') {
-          if (value.get) { // computed property
-              this._computed.push(binding)
-              binding.isComputed = true
-              value = value.get
-          } else { // normal object
-              // TODO watchObject
-          }
-      } else if (type === 'Array') {
-          watchArray(value)
-          value.on('mutate', function () {
-              binding.emitChange()
-          })
-      }
-      ...
-    }
-    ```
+        ```javascript
+        // binding.js
+        emitChange() {
+            this.dependents.forEach((directive) => {
+                directive.refresh()
+            })
+        }
+        ```
 

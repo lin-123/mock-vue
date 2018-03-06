@@ -29,7 +29,6 @@ Seed.controller('Todos', function (scope) {
     }}
 
     scope.itemLabel = {get: function () {
-        debugger
         return scope.remaining > 1 ? 'items' : 'item'
     }}
 

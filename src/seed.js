@@ -117,7 +117,7 @@ class Seed {
   }
 
   _createBinding(key) {
-    const binding = this._bindings[key] = new Binding(this.scope[key], key)
+    const binding = this._bindings[key] = new Binding(this.scope[key])
 
     Object.defineProperty(this.scope, key, {
       get: () => {
