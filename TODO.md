@@ -12,15 +12,15 @@
   * 01fae38fe fix delegation, and invoke updates during binding
   * c0a65ddda clean up, trying to fix delegation after array reset
   * faf055791 no longer need $refresh
-  * dada181c8 fix _dump()
+
+# DONE
+
+## [dada181c8] fix _dump()
+ - 兼容computed变量
 
 ## [7a0172d60] auto parse dependency for computed properties!!!!!
   - computed properties 就是每次scope里面的数据变了都要重新算一次这些properties
   - 在scope[key].set中调用这些properties就好了
-  -
-
-
-# DONE
 
 ## [f6d6bba70d871] inverse value
 

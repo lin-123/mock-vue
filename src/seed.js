@@ -161,13 +161,11 @@ class Seed {
     for (var key in this.scope) {
       if(key.charAt(0) == '$') continue;
 
-      const val = this._bindings[key]
-      if (!val) continue
-      if (Array.isArray(val)) {
-          dump[key] = val.map(subDump)
-      } else {
-          dump[key] = this._bindings[key].value
-      }
+      const {value, type, isComputed} = this._bindings[key]
+      if (!value) continue
+      if(type == 'Array') dump[key] = value.map(subDump)
+      else if(isComputed) dump[key] = value()
+      else dump[key] = this._bindings[key].value
     }
     return dump
   }
