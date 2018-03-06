@@ -1,5 +1,28 @@
 # 7a0172d60 auto parse dependency for computed properties!!!!!
 
+> 计算属性
+
+## 实现原理
+  - computed properties 就是每次scope里面的数据变了都要重新算一次这些properties
+  - 将computed中的scope变量添加到deps数组中
+    * 注册依赖
+
+        ```javascript
+        Seed.prototype._parseDeps = function (binding) {
+            depsObserver.on('get', function (dep) {
+                if (!dep.dependents) {
+                    dep.dependents = []
+                }
+                dep.dependents.push.apply(dep.dependents, binding.instances)
+            })
+            binding.value()
+            depsObserver.off('get')
+        }
+        ```
+
+  - 在scope[key].set中调用bindings[key].dependencies 这些properties就好了
+
+
 - 这种写法是为了能够将completed作为计算属性来用
 
     <!-- app.js -->
@@ -34,3 +57,4 @@
       ...
     }
     ```
+

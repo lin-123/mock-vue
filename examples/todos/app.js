@@ -2,8 +2,8 @@
 
 var todos = [
     { text: 'make nesting controllers work', done: true },
-    { text: 'complete ArrayWatcher', done: false },
-    { text: 'computed properties', done: false },
+    { text: 'complete ArrayWatcher', done: true },
+    { text: 'computed properties', done: true },
     { text: 'parse textnodes', done: false }
 ]
 
@@ -11,24 +11,27 @@ Seed.controller('Todos', function (scope) {
 
     // regular properties -----------------------------------------------------
     scope.todos = todos
-    scope.filter = 'all'
-    scope.allDone = false
+    scope.filter = window.location.hash.slice(2) || 'all'
+    // 什么时候触发的？
     scope.remaining = todos.reduce(function (count, todo) {
         return count + (todo.done ? 0 : 1)
     }, 0)
+    scope.allDone = scope.remaining === 0
 
     // computed properties ----------------------------------------------------
-    scope.total = function () {
+    scope.total = {get: function () {
         return scope.todos.length
-    }
+    }}
 
-    scope.completed = function () {
-        return scope.total() - scope.remaining
-    }
+    scope.completed = {get: function () {
+        console.log('call completed: ', scope.total, scope.remaining)
+        return scope.total - scope.remaining
+    }}
 
-    scope.itemLabel = function () {
+    scope.itemLabel = {get: function () {
+        debugger
         return scope.remaining > 1 ? 'items' : 'item'
-    }
+    }}
 
     // event handlers ---------------------------------------------------------
     scope.addTodo = function (e) {
@@ -66,7 +69,7 @@ Seed.controller('Todos', function (scope) {
         scope.todos.forEach(function (todo) {
             todo.done = e.el.checked
         })
-        scope.remaining = e.el.checked ? 0 : scope.total()
+        scope.remaining = e.el.checked ? 0 : scope.total
     }
 
     scope.removeCompleted = function () {
@@ -77,4 +80,4 @@ Seed.controller('Todos', function (scope) {
 
 })
 
-var app = Seed.bootstrap()
+app = Seed.bootstrap()

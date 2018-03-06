@@ -4,6 +4,9 @@ const TextnodeParser = require('./textnode-parser')
 const Controllers = require('./controllers')
 const {prefix, regexps, BLOCK, DATA, EACH, CONTROLLER, constance} = require('./config')
 const {typeofObj, watchArray, get} = require('./utils')
+const Binding = require('./core/binding')
+const Observer = require('./core/observer')
+
 
 class Seed {
   constructor({el, data = {}, options = {}}) {
@@ -22,9 +25,6 @@ class Seed {
     if(scope.$seed) {
       scope = this.scope = scope.$dump()
     }
-    // for listening scope data get set
-    // this.on('set', (...args) => console.log(args, 'on set '));
-    // this.on('get', (...args) => console.log(args, 'on get '));
 
     scope.$seed     = this
     scope.$destroy  = this.destroy.bind(this)
@@ -36,6 +36,9 @@ class Seed {
 
     this._compileNode(this.el, true)
     this._extension(controllerName)
+
+    // 收集依赖
+    Observer.collect()
   }
 
   _compileNode(el, root) {
@@ -95,25 +98,8 @@ class Seed {
 
     if(directive.bind) directive.bind.call(directive, bindingValue);
     if(bindingValue) directive.update(bindingValue)
-
-    scopeOwner._bindDependency(directive)
   }
 
-  _bindDependency(directive) {
-    const {dep} = directive
-    if(!dep) return;
-
-    let depScop = this._getScopeOwner(dep, this)
-    // debugger
-    const depBind = depScop._bindings[dep.key] || depScop._createBinding(dep.key)
-    if(!depBind.dependencies) {
-      depBind.dependencies = []
-      depBind.refreshDependents = () => {
-        depBind.dependencies.forEach(d => d.refresh())
-      }
-    }
-    depBind.dependencies.push(directive)
-  }
 
   _getScopeOwner(key, scopeOwner) {
     if(key.nesting) {
@@ -127,46 +113,46 @@ class Seed {
         scopeOwner = scopeOwner._options.parentSeed
       }
     }
-
     return scopeOwner
   }
 
   _createBinding(key) {
-    this._bindings[key] = {
-      directives: [],
-      value: this.scope[key]
-    }
+    const binding = this._bindings[key] = new Binding(this.scope[key], key)
 
     Object.defineProperty(this.scope, key, {
       get: () => {
         this.emit('get', key)
-        return this._bindings[key].value
+        if(Observer.paresing) {
+          Observer.emit('get', binding, key)
+        }
+        return binding.isComputed ? binding.value() : binding.value
       },
       set: (newVal) => {
-        if(newVal === this._bindings[key].value) return;
+        if(newVal === binding.value) return;
         this.emit('set', key, newVal)
-        this._updateBinding(key, newVal)
+        this._updateBinding(key, newVal, binding)
       }
     })
-    return this._bindings[key]
+    return binding
   }
 
-  _updateBinding(key, newVal) {
-    // watch array
-    const type = typeofObj(newVal)
+  _updateBinding(key, newVal, binding) {
+    binding.parseValue(newVal)
+
+    if(binding.isComputed) {
+      Observer.computeds.push(binding);
+    }
+
     const seed = this
-    if(type === 'Array') {
+    if(binding.type === 'Array') {
       watchArray(newVal)
       newVal.on('mutation', () => {
-        const refDep = seed._bindings[key].refreshDependents()
-        refDep && refDep()
+        seed._bindings[key].emitChange()
       })
     }
 
-    this._bindings[key].value = newVal
-    this._bindings[key].directives.forEach( (directive)=> {
-      directive.update(newVal)
-    })
+    binding.refresh()
+    binding.emitChange()
   }
 
   _dump() {

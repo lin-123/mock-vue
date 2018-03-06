@@ -37,10 +37,6 @@ class DirectiveParser {
     res.root = this._getVal(noArg, regexps.root)
     let noNesting = noArg.replace(res.nesting, '').replace(res.root, '')
     res.key = this._getVal(noNesting, regexps.KEY_RE)
-    const dep = this._getVal(noNesting, regexps.DEP_RE)
-    if(dep) {
-      res.dep = this._parseKey(dep.slice(1).trim())
-    }
     return res
   }
 
@@ -74,24 +70,13 @@ class DirectiveParser {
     }
   }
 
-  refresh() {
-    this.update(this.value)
-  }
-
   update(newVal) {
-    if(this.value === newVal) return;
-
-    this.value = newVal
     if(typeof newVal === 'function' && !this.fn) {
       newVal = newVal()
     }
     if(this.inverse) newVal = !newVal;
 
     this._update(this._filters ? this._applyFilters(newVal) : newVal)
-    const {refreshDependents} = this.binding
-    if(refreshDependents) {
-      refreshDependents()
-    }
   }
 }
 
