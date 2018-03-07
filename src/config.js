@@ -19,6 +19,7 @@ module.exports = {
     FILTER_RE: /\|[^<]+/,
     DEP_RE: /<.*/,
     INVERSE_RE: /^!/,
+    ONEWAY: /\-oneway$/,
   },
   mutatorMethods: [
     'pop',

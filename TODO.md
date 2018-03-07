@@ -1,11 +1,26 @@
 # TODO
 ## [5f5aa8fb4] v0.1.0
+
+# [4dad89d3a] readme
+# [e49a31c94] todo
+# [960210253] update todo
+# [3709862ec] update examples
+# [8e028ab63] remove explorations
+# [0e91e50df] minor updates
+# [8c8a07dd7] chinese readme
+# [3d99d8fc9] jshint pass, readme & todo
+
+# DONE
+
+# [b5f022718] finish text parser  添加文本节点解析
+# [5541b971e] text parser
+# [7fd557ccc] text parser started, features, optional oneway binding for input
+
 ## [f9077cfa6] html and attr directives
+
 ## [76ee306bd] remove redundant dependencies for computed properties
 ## [62a7ebe7d] remove unused
 
-
-# DONE
 ## [646b79086] sd-style
 ## [60a3e46fb] sd-if
 ## [60e246eed] clean up binding

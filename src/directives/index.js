@@ -4,9 +4,22 @@ const each = require('./each')
 module.exports = {
   on,
   each,
-  text: function (value) {
-    this.el.textContent = value || ''
+  attr: function (value) {
+    this.el.setAttribute(this.arg, value)
   },
+
+  text: function (value) {
+    this.el.textContent =
+      (typeof value === 'string' || typeof value === 'number')
+      ? value : ''
+  },
+
+  html: function (value) {
+    this.el.innerHTML =
+      (typeof value === 'string' || typeof value === 'number')
+      ? value : ''
+  },
+
   show: function (value) {
     this.el.style.display = value ? '' : 'none'
   },
@@ -19,6 +32,7 @@ module.exports = {
   },
   value: {
     bind(value) {
+      if(this.oneway) return;
       this.handler = () => {
         this.seed.scope[this.key] = this.el.value
       }
@@ -28,6 +42,7 @@ module.exports = {
       this.el.value = value
     },
     unbind() {
+      if(this.oneway) return;
       this.el.removeEventListener('change', this.handler)
     }
   },
@@ -44,6 +59,7 @@ module.exports = {
   // emit change
   checked: {
     bind() {
+      if(this.oneway) return console.log(this.el);
       this.handler = () => {
         this.seed.scope[this.key] = this.el.checked
       }
@@ -53,6 +69,7 @@ module.exports = {
       this.el.checked = flag
     },
     unbind() {
+      if(this.oneway) return;
       this.el.removeEventListener('change', this.handler)
     }
   },

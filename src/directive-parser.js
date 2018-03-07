@@ -5,6 +5,11 @@ const {prefix, CONTROLLER, regexps} = require('./config')
 class DirectiveParser {
   constructor(name, value) {
     this.directiveName = name.substr(prefix.length + 1)
+    if(regexps.ONEWAY.test(this.directiveName)){
+      this.directiveName = this.directiveName.replace(regexps.ONEWAY, '')
+      this.oneway = true
+    }
+
     // for seed
     this._buildUpdate(this.directiveName)
     // for directive 'on'

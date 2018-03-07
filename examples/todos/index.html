@@ -10,7 +10,8 @@
         <section id="todoapp" sd-controller="Todos" sd-class="filter">
 
             <header id="header">
-                <h1 sd-style="text-transform:format">todos</h1>
+                <p>title = {{title}} format haha {{format}}</p>
+                <h1 sd-style="text-transform:format" sd-html="title" sd-attr="title:title"></h1>
                 <!-- main input box -->
                 <input
                     id="new-todo"
@@ -24,7 +25,7 @@
                 <input
                     id="toggle-all"
                     type="checkbox"
-                    sd-checked="allDone"
+                    sd-checked-oneway="allDone"
                     sd-on="change:toggleAll"
                 >
                 <ul id="todo-list">
@@ -40,10 +41,7 @@
                                 sd-checked="todo.done"
                                 sd-on="change:updateCount"
                             >
-                            <label
-                                sd-text="todo.text"
-                                sd-on="dblclick:edit"
-                            ></label>
+                            <label sd-on="dblclick:edit" >{{todo.text}}</label>
                             <button class="destroy" sd-on="click:removeTodo"></button>
                         </div>
                         <input
