@@ -98,6 +98,7 @@ class Seed {
 
     if(directive.bind) directive.bind.call(directive, bindingValue);
     if(bindingValue) directive.update(bindingValue)
+
   }
 
 
@@ -117,7 +118,8 @@ class Seed {
   }
 
   _createBinding(key) {
-    const binding = this._bindings[key] = new Binding(this.scope[key])
+    const binding = this._bindings[key] = new Binding()
+    binding.update(this.scope[key])
 
     Object.defineProperty(this.scope, key, {
       get: () => {
@@ -130,29 +132,10 @@ class Seed {
       set: (newVal) => {
         if(newVal === binding.value) return;
         this.emit('set', key, newVal)
-        this._updateBinding(key, newVal, binding)
+        binding.update(newVal, Observer)
       }
     })
     return binding
-  }
-
-  _updateBinding(key, newVal, binding) {
-    binding.parseValue(newVal)
-
-    if(binding.isComputed) {
-      Observer.computeds.push(binding);
-    }
-
-    const seed = this
-    if(binding.type === 'Array') {
-      watchArray(newVal)
-      newVal.on('mutation', () => {
-        seed._bindings[key].emitChange()
-      })
-    }
-
-    binding.refresh()
-    binding.emitChange()
   }
 
   _dump() {
@@ -182,9 +165,6 @@ class Seed {
         if(!directive.unbind) return;
         directive.unbind()
       })
-
-      // cannot delete this, beacuse this scope varaible bind
-      // delete this._bindings[bindKey]
     }
 
     if(this._options.parentSeed) delete this._options.parentSeed[constance.child + this.el.id]

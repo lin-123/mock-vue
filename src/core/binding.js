@@ -1,18 +1,15 @@
 /**
  * binding class
 */
-const {typeofObj} = require('../utils')
+const {typeofObj, watchArray} = require('../utils')
 
 class Binding {
   constructor(value) {
     this.directives = []
     this.dependents = []
-    this.parseValue(value)
-
   }
 
-  // will set value,type,isComputed
-  parseValue(value) {
+  update(value, Observer) {
     if(value === this.value) return;
     this.value = value
     const type = this.type = typeofObj(value)
@@ -20,16 +17,22 @@ class Binding {
     if(type === 'Object' && value.get) {
       this.value = value.get
       this.isComputed = true
-    }
-  }
+      Observer.computeds.push(this);
 
-  refresh() {
+    } else if(type === 'Array') {
+      watchArray(value)
+      value.on('mutation', () => {
+        this._emitChange()
+      })
+    }
+
     this.directives.forEach( (directive)=> {
       directive.update(this.value)
     })
+    this._emitChange()
   }
 
-  emitChange() {
+  _emitChange() {
     this.dependents.forEach((directive) => {
       directive.refresh()
     })

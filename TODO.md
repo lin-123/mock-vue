@@ -3,16 +3,16 @@
 
 ## [5f5aa8fb4] v0.1.0
 
+# DONE
+
 ## [52272487] event delegation in sd-each
 > [javascript: 事件委托解析](http://www.imooc.com/article/16468)
 - [ ] delegate event to current seed's parentNode which in sd-each
   * [x] no seed.each parameter
   * [ ] cannot check delegate
 
-  * 01fae38fe fix delegation, and invoke updates during binding
 
-
-# DONE
+## [01fae38fe] fix delegation, and invoke updates during binding
 
 ## [c0a65ddda] clean up, trying to fix delegation after array reset
   * faf055791 no longer need $refresh
