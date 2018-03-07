@@ -4,33 +4,38 @@ module.exports = {
   bind() {
     const opt = this.seed._options
     if(opt.each) {
-      const attribute = this.directiveName + '*="' + this.expression
-      this.selector = `[${attribute}]`
       this.delegator = opt.container
+      this.el[this.expression] = true
+      this.el.seed = this.seed
+      // this.marker = this.expression
     }
   },
 
   update: function (handler) {
     this.unbind()
     if(!handler) return;
-    const { arg: event, el, seed: {scope}, delegator, selector } = this
+    const { arg: event, delegator, expression } = this
+    if(delegator) {
+      if(delegator.sdDelegationHandlers[expression]) return;
 
-    // todo e.target cannot fund
-    if(delegator && !delegator[selector] && false) {
-      delegator[selector] = (e) => {
-        const target = delegateCheck(e.target, delegator, this.selector)
+      const dHandler = delegator.sdDelegationHandlers[expression] = (e) => {
+        const target = delegateCheck(e.target, delegator, expression)
+
         if(!target) return;
-        handler({ el: target, event: e, scope })
+        handler({ el: target, event: e, scope: target.seed.scope })
       }
-      el.addEventListener(event, this.delegator[selector])
+
+      delegator.addEventListener(event, dHandler)
+      dHandler.event = event
       return;
     }
 
+    const {el, seed: {scope}} = this
     this.handler = (e) => {
       return handler({
         el,
         event: e,
-        scope,
+        scope
       })
     }
     el.addEventListener(event, this.handler)
@@ -58,12 +63,12 @@ module.exports = {
 }
 
 // cannot get targe, beacuase the attributes be removed
-function delegateCheck (current, top, selector) {
-  if (current.webkitMatchesSelector(selector)) {
-      return current
+function delegateCheck (current, top, expression) {
+  if (current[expression]) {
+    return current
   } else if (current === top) {
-      return false
+    return false
   } else {
-      return delegateCheck(current.parentNode, top, selector)
+    return delegateCheck(current.parentNode, top, expression)
   }
 }

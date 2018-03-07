@@ -10,10 +10,12 @@
   * [ ] cannot check delegate
 
   * 01fae38fe fix delegation, and invoke updates during binding
-  * c0a65ddda clean up, trying to fix delegation after array reset
-  * faf055791 no longer need $refresh
+
 
 # DONE
+
+## [c0a65ddda] clean up, trying to fix delegation after array reset
+  * faf055791 no longer need $refresh
 
 ## [dada181c8] fix _dump()
  - 兼容computed变量

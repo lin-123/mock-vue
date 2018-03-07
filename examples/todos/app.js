@@ -24,7 +24,6 @@ Seed.controller('Todos', function (scope) {
     }}
 
     scope.completed = {get: function () {
-        console.log('call completed: ', scope.total, scope.remaining)
         return scope.total - scope.remaining
     }}
 

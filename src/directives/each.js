@@ -13,15 +13,24 @@ module.exports = {
   },
 
   unbind() {
+    const {container} = this
+    const handlers = container.sdDelegationHandlers
+    for(let key in handlers) {
+      container.removeEventListener(handlers[key].event, handlers[key])
+    }
+    delete container.sdDelegationHandlers
+
     if(this.collection) {
       this.collection.forEach(({$destroy}) => $destroy())
       this.collection = null
     }
+
   },
 
   update(collection) {
     this.unbind()
     this.collection = collection
+    this.container.sdDelegationHandlers = {}
     collection.on('mutation', ({method, args, result}) => {
       mutations[method].call(this, args, result)
     })
