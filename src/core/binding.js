@@ -7,17 +7,16 @@ class Binding {
   constructor(value) {
     this.directives = []
     this.dependents = []
+    this._set(value)
   }
 
-  update(value, Observer) {
-    if(value === this.value) return;
+  _set(value) {
     this.value = value
     const type = this.type = typeofObj(value)
     this.isComputed = false
     if(type === 'Object' && value.get) {
       this.value = value.get
       this.isComputed = true
-      Observer.computeds.push(this);
 
     } else if(type === 'Array') {
       watchArray(value)
@@ -25,7 +24,10 @@ class Binding {
         this._emitChange()
       })
     }
+  }
 
+  update(value){
+    this._set(value)
     this.directives.forEach( (directive)=> {
       directive.update(this.value)
     })

@@ -118,8 +118,7 @@ class Seed {
   }
 
   _createBinding(key) {
-    const binding = this._bindings[key] = new Binding()
-    binding.update(this.scope[key])
+    const binding = this._bindings[key] = new Binding(this.scope[key])
 
     Object.defineProperty(this.scope, key, {
       get: () => {
@@ -132,7 +131,8 @@ class Seed {
       set: (newVal) => {
         if(newVal === binding.value) return;
         this.emit('set', key, newVal)
-        binding.update(newVal, Observer)
+        binding.update(newVal)
+        if(binding.isComputed) Observer.computeds.push(binding);
       }
     })
     return binding
