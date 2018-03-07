@@ -1,5 +1,7 @@
 /**
  * binding class
+ *
+ * have some proplem at _set function
 */
 const {typeofObj, watchArray} = require('../utils')
 

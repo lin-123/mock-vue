@@ -37,6 +37,7 @@ class Seed {
     this._compileNode(this.el, true)
     this._extension(controllerName)
 
+
     // 收集依赖
     Observer.collect()
   }
@@ -100,7 +101,6 @@ class Seed {
     if(bindingValue) directive.update(bindingValue)
 
   }
-
 
   _getScopeOwner(key, scopeOwner) {
     if(key.nesting) {
@@ -176,7 +176,7 @@ class Seed {
     const controller = Controllers[controllerName]
 
     if(!controller) return;
-    controller.call(null, this.scope, this)
+    controller.call(this, this.scope)
   }
 }
 
