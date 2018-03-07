@@ -4,10 +4,9 @@
 ## [76ee306bd] remove redundant dependencies for computed properties
 ## [62a7ebe7d] remove unused
 
-## [646b79086] sd-style
 
 # DONE
-
+## [646b79086] sd-style
 ## [60a3e46fb] sd-if
 ## [60e246eed] clean up binding
 

@@ -10,6 +10,10 @@ module.exports = {
   show: function (value) {
     this.el.style.display = value ? '' : 'none'
   },
+  visible: function (value) {
+    this.el.style.visibility = value ? '' : 'hidden'
+  },
+
   focus(value) {
     if(value) this.el.focus();
   },
@@ -55,5 +59,15 @@ module.exports = {
 
   if(value) {
     if(!value) this.el.parentNode.removeChild(this.el)
+  },
+
+  style: {
+    bind() {
+      this.arg = this.arg.replace(/-(.)/g, (m, char) => char.toUpperCase())
+    },
+    update(value) {
+      this.el.style[this.arg] = value
+    }
   }
+
 }

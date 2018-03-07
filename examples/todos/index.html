@@ -10,7 +10,7 @@
         <section id="todoapp" sd-controller="Todos" sd-class="filter">
 
             <header id="header">
-                <h1>todos</h1>
+                <h1 sd-style="text-transform:format">todos</h1>
                 <!-- main input box -->
                 <input
                     id="new-todo"
@@ -33,7 +33,6 @@
                         sd-each="todo:todos"
                         sd-class="completed:todo.done, editing:todo.editing"
                     >
-                        <p sd-if="todo.done">==========</p>
                         <div class="view">
                             <input
                                 class="toggle"

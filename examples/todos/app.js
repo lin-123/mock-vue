@@ -8,6 +8,7 @@ var todos = [
 ]
 
 Seed.controller('Todos', function (scope) {
+    scope.format = 'uppercase'
 
     // regular properties -----------------------------------------------------
     scope.todos = todos

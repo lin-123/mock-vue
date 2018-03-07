@@ -21,7 +21,7 @@ class DirectiveParser {
   }
 
   _parseKey(value) {
-    const argMatch = value.match(/(^\w+):(.+)/)
+    const argMatch = value.match(/(^[^:]+):(.+)/)
     let noArg, res = {}
     if(argMatch){
       res.arg = argMatch[1]
