@@ -52,4 +52,8 @@ module.exports = {
       this.el.removeEventListener('change', this.handler)
     }
   },
+
+  if(value) {
+    if(!value) this.el.parentNode.removeChild(this.el)
+  }
 }

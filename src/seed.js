@@ -98,7 +98,7 @@ class Seed {
     const bindingValue = binding && binding.value
 
     if(directive.bind) directive.bind.call(directive, bindingValue);
-    if(bindingValue) directive.update(bindingValue)
+    directive.update(bindingValue)
 
   }
 

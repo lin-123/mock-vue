@@ -3,13 +3,14 @@
 ## [f9077cfa6] html and attr directives
 ## [76ee306bd] remove redundant dependencies for computed properties
 ## [62a7ebe7d] remove unused
+
 ## [646b79086] sd-style
+
+# DONE
+
 ## [60a3e46fb] sd-if
 ## [60e246eed] clean up binding
 
-
-
-# DONE
 ## [832e97588] separate binding into its own file
 
 ## [52272487] event delegation in sd-each

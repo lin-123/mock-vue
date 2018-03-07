@@ -28,6 +28,7 @@ module.exports = {
   },
 
   update(collection) {
+    if(!collection || !collection.length) return;
     this.unbind()
     this.collection = collection
     this.container.sdDelegationHandlers = {}

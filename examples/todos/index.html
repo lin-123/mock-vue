@@ -33,6 +33,7 @@
                         sd-each="todo:todos"
                         sd-class="completed:todo.done, editing:todo.editing"
                     >
+                        <p sd-if="todo.done">==========</p>
                         <div class="view">
                             <input
                                 class="toggle"
