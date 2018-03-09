@@ -3,16 +3,24 @@
     <head>
         <title>Simple Example</title>
         <meta charset="utf-8">
+        <style type="text/css">
+            .red { color: red; }
+        </style>
         <script src="../dist/seed.js"></script>
     </head>
     <body sd-controller="hello">
-        <span sd-text="hello"></span>
+        <input type="checkbox" sd-checked="checked">
+        <span sd-text="hello | uppercase" sd-class="red:checked"></span>
         <script>
             // var Seed = require('seed')
+
             Seed.controller('hello', function (scope) {
-                scope.hello = 'Hello World!'
+                scope.hello = {get:function () {
+                    return scope.checked ? 'red!!!' : 'hello seed'
+                }}
             })
-            Seed.bootstrap()
+            console.log('asdf')
+            app = Seed.bootstrap()
         </script>
     </body>
 </html>

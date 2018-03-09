@@ -22,6 +22,8 @@ const path = require('path');
 const webpack = require('webpack')
 
 const webpackConfig = {
+  // 如果在代码里debugger失效可以加上这一段
+  mode: 'development',
   entry: {
     app: './src/main.js',
   },
@@ -46,7 +48,6 @@ const webpackConfig = {
 
 module.exports = webpackConfig
 ```
-
 
 ## command
 

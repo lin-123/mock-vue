@@ -30,6 +30,7 @@ class Binding {
 
   update(value){
     this._set(value)
+
     this.directives.forEach( (directive)=> {
       directive.update(this.value)
     })
