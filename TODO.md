@@ -6,6 +6,13 @@
 * 58363ebea fix sd-focus, comply with todomvc spec
 * 0b77a9665 ignore
 
+bug:
+
+```javascript
+    if(directive.bind) directive.bind.call(directive, bindingValue);
+    directive.update(bindingValue)
+```
+
 # DONE
 
 ## v0.1.0 The last few things
