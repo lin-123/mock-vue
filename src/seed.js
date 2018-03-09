@@ -37,7 +37,6 @@ class Seed {
     this._compileNode(this.el, true)
     this._extension(controllerName)
 
-
     // 收集依赖
     Observer.collect()
   }
@@ -90,15 +89,21 @@ class Seed {
 
     // for nest controller
     scopeOwner = this._getScopeOwner(directive, scopeOwner)
+
     if(!scopeOwner._bindings[key]) scopeOwner._createBinding(key);
 
     scopeOwner._bindings[key].directives.push(directive)
     const binding = scopeOwner._bindings[key]
+
     directive.binding = binding
     const bindingValue = binding && binding.value
-
+    // if(!bindingValue) debugger
     if(directive.bind) directive.bind.call(directive, bindingValue);
-    directive.update(bindingValue)
+
+    // 整理一下为什么添加一个todo item会打印那么多console
+    console.log(key, bindingValue)
+    // why load twice
+    if(bindingValue !== undefined) directive.update(bindingValue)
 
   }
 

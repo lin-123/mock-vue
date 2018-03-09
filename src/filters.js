@@ -20,6 +20,7 @@ module.exports = {
 
     key(handler, codeName) {
         const code = keyCodes[codeName] || codeName
+        // if(!code) return;
         return (e) => {
             if(e.event.keyCode !== code) return;
             handler(e)
