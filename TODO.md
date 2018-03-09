@@ -1,4 +1,10 @@
 # TODO
+* e4d06a10e 0.1.2
+* dd652b660 remove temp file
+* 8eedfeacf computed properties now have access to context scope and element
+* 1a842d18f 0.1.1
+* 58363ebea fix sd-focus, comply with todomvc spec
+* 0b77a9665 ignore
 
 # DONE
 
